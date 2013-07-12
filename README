@@ -1,0 +1,8 @@
+RSTT
+====
+
+Vaisala Radiosonde Telemetry Tool
+
+Library and tools for reviving and decoding telemetry form Vaisala
+meteorological radio sondes (namely RS92-SGP/RS92-SGPD). It is based
+on Gnuradio building blocks with some custom code.

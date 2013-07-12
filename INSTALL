@@ -1,0 +1,7 @@
+
+Requirements:
+ * Gnuradio
+
+Install:
+ Just copy content of grc_gnuradio directory into ~/.grc_gnuradio.
+
