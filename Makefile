@@ -12,3 +12,5 @@ localinstall:
 	cp src/rstt/__init__.py	$(INSTALL_DST)
 	cp src/rstt/symbols2bites.py $(INSTALL_DST)
 	cp src/rstt/symbols2bites.py.xml $(INSTALL_DST)
+	cp src/rstt/bites2bytes.py $(INSTALL_DST)
+	cp src/rstt/bites2bytes.py.xml $(INSTALL_DST)
