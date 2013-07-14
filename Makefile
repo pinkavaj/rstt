@@ -16,4 +16,4 @@ localinstall:
 	cp src/rstt/bites2bytes.py.xml $(INSTALL_DST)
 	cp src/rstt/bytes2frames.py $(INSTALL_DST)
 	cp src/rstt/bytes2frames.py.xml $(INSTALL_DST)
-	grcc src/rstt/recieve.grc
+	grcc src/rstt/decode.grc
