@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from gnuradio import gr, gr_unittest, blocks
-from rstt_symbols2bites import symbols2bites
+from symbols2bites import symbols2bites
 
 _1 = (0, 1, )
 _0 = (1, 0, )

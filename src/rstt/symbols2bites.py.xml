@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <block>
-    <name>RSTT -  symbols to bites</name>
+    <name>RSTT - symbols to bites</name>
 	<key>rstt_symbols2bites</key>
 	<category>RSTT</category>
-	<import>from gr.symbols2bites import symbols2bites</import>
+    <import>from rstt.symbols2bites import symbols2bites</import>
 	<make>symbols2bites($sync_nbites)</make>
 	<param>
 		<name>Sync window lenght</name>

@@ -1,7 +1,19 @@
+Currently installation is tested only for Linux,
+but should work for anny platform supported by GNURadio.
 
 Requirements:
  * Gnuradio
+ * gr-osmosdr
 
 Install:
- Just copy content of grc_gnuradio directory into ~/.grc_gnuradio.
+ Installation os not necesary, all should work as-is.
+ Instalation for current user only can be done by command
+
+make localinstall
+
+all necesary files will be copied into directory ~/.grc_gnuradio/rstt.
+
+Remember to set PYTHONPATH accordingly in your ~/.bash_profile:
+
+export PYTHONPATH=${PYTHONPATH}:~/.grc_gnuradio
 
