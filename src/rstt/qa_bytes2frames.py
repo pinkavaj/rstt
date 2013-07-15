@@ -20,32 +20,29 @@ class test_rstt_bytes2frames(gr_unittest.TestCase):
         result_data = tuple([int(x) for x in dst.data()])
         self.assertEqual(data_exp, result_data)
 
-    def test_rstt_symbosl2bites_00(self):
-        data_src = (0x10, 0x65, 0x10) + (0, )*34 + \
+    def test_rstt_bytes2frames_00(self):
+        data_src =(0x2A, )*5 + (0x10, 0x65, 0x10) + (0, )*34 + \
                 (0x69, 0x0C, ) + (0, )*26 + \
                 (0x3D, 0x94, ) + (0, )*124 + \
                 (0x68, 0x05, ) + (0, )*12 + \
-                (0xff, 0x02, ) + (0, )*28 + \
-                (0x2A, )*5
+                (0xff, 0x02, ) + (0, )*28
         data_exp = data_src
         #data_src = data_src + data_src
         test_block = bytes2frames()
         self.do(data_src, data_exp, test_block)
 
-    def test_rstt_symbosl2bites_01(self):
-        data_src = (0x10, 0x65, 0x10) + (0, )*34 + \
+    def test_rstt_bytes2frames_01(self):
+        data_src = (0x2A, )*5 + (0x10, 0x65, 0x10) + (0, )*34 + \
                 (0x69, 0x0C, ) + (0, )*26 + \
                 (0x3D, 0x94, ) + (0, )*124 + \
                 (0x68, 0x05, ) + (0, )*12 + \
-                (0xff, 0x02, ) + (0, )*28 + \
-                (0x2A, )*5
+                (0xff, 0x02, ) + (0, )*28
         data_exp = \
-                (0xF00, 0xF00, 0xF00) + (0x700, )*34 + \
+                (0xF00,)*8 + (0x700, )*34 + \
                 (0xF00, 0xF00, ) + (0x700, )*26 + \
                 (0xF00, 0xF00, ) + (0x700, )*124 + \
                 (0xF00, 0xF00, ) + (0x700, )*12 + \
-                (0xF00, 0xF00, ) + (0x700, )*23 + (0x01, )*5 + \
-                (0x801, )*5 + \
+                (0xF00, 0xF00, ) + (0x700, )*18 + (0x01, )*10 + \
                 data_src
         data_src = (0x01,)* 10 + data_src
         #data_src = data_src + data_src
