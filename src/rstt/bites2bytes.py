@@ -152,11 +152,11 @@ class bites2bytes(gr.basic_block):
         B = 0
         for i in range(idx, idx + 8):
             b = self._in[i]
-            B = B << 1
+            B = B >> 1
             if b == -1:
                 status |= self.STATUS_INVALID_BYTE
                 continue
-            B |= b
+            B |= b*128
 
         self._out[self._out_idx] = B | status
         self._out_idx += 1
@@ -193,5 +193,6 @@ class bites2bytes(gr.basic_block):
             if sync_offs != self._sync_offs:
                 if not self._send_bytes(self._sync_len / 10 / 2 - 1):
                     return
+                continue
             self._send_byte()
 

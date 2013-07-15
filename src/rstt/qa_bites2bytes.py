@@ -26,7 +26,7 @@ class test_rstt_bites2bytes(gr_unittest.TestCase):
                 (0, 1, 1, 1, 1, 1, 1, 1, 1, 1, ) + \
                 (0, 1, 0, 0, 1, 1, 0, 1, 1, 1, ) + \
                 (0, 0, 0, 0, 0, 0, 0, 0, 0, 1, ) * 18
-        data_exp = (0x10, 0xff, 0x9b )
+        data_exp = (0x08, 0xff, 0xd9 )
         test_block = bites2bytes(16)
         self.do(data_src, data_exp, test_block)
 
@@ -37,7 +37,7 @@ class test_rstt_bites2bytes(gr_unittest.TestCase):
                 (0, 1, 1, 1, 1, 1, 1, 1, 1, 1, ) + \
                 (0, 1, 0, 0, 1, 1, 0, 1, 1, 1, ) + \
                 (0, 0, 0, 0, 0, 0, 0, 0, 0, 1, ) * 18
-        data_exp = (0x10, 0xff, 0x9b )
+        data_exp = (0x08, 0xff, 0xd9 )
         test_block = bites2bytes(16)
         self.do(data_src, data_exp, test_block)
 
@@ -52,7 +52,7 @@ class test_rstt_bites2bytes(gr_unittest.TestCase):
                 (0, 0, 1, 0, 1, 1, 1, 0, 0, 1, ) + \
                 (0, 1, 0, 0, 1, 1, 0, 1, 1, 1, ) + \
                 (0, 0, 0, 0, 0, 0, 0, 0, 0, 1, ) * 18
-        data_exp = (0x12, 0xff,) + (0, )*16 + (0x9b, 0x5c, 0x9b, )
+        data_exp = (0x48, 0xff,) + (0, )*16 + (0xd9, 0x3a, 0xd9, )
         test_block = bites2bytes(16)
         self.do(data_src, data_exp, test_block)
 
@@ -66,7 +66,7 @@ class test_rstt_bites2bytes(gr_unittest.TestCase):
                 (1, 1, 0, 1, 0, 1, 0, 1, 1, ) + \
                 (0, 1, 0, 0, 1, 1, 0, 1, 1, 1, ) + \
                 (0, 0, 0, 0, 0, 0, 0, 0, 0, 1, ) * 18
-        data_exp = (0x12, 0xff,) + (0, )*16 + (0x9b, 0x1d5, 0x9b, )
+        data_exp = (0x48, 0xff,) + (0, )*16 + (0xd9, 0x1ab, 0xd9, )
         test_block = bites2bytes(16)
         self.do(data_src, data_exp, test_block)
 
