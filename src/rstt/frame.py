@@ -46,7 +46,9 @@ class Frame:
             self._d_ch8 = struct.unpack('I',  self._data[65:68] + b'\x00')[0]
 
         if self._crc3_ok:
-            self._d_74 = self._data[74:98] # TODO
+            self._d_gps_t = struct.unpack("<f", self._data[72:76])
+            self._d_78 = self._data[76:86] # TODO
+            self._d_gps_status = struct.unpack("12B", self._data[86:98])
             self._d_gps_pseudorange = struct.unpack("<12d", self._data[98:194])
 
         if self._crc4_ok:
