@@ -4,16 +4,28 @@ but should work for anny platform supported by GNURadio.
 Requirements:
  * Gnuradio
  * gr-osmosdr
+ * cmake
+ * C++ compiler and usual developers stuff ...
 
 Install:
- Installation os not necesary, all should work as-is.
- Instalation for current user only can be done by command
+ * Remove __all__ files installed by older versions of RSTT
+  (form: ~/.grc_gnuradio /usr/local ... )
+  if You does not do so, you will probably fall into strange troubles.
 
-make localinstall
-
-all necesary files will be copied into directory ~/.grc_gnuradio/rstt.
-
-Remember to set PYTHONPATH accordingly in your ~/.bash_profile:
-
-export PYTHONPATH=${PYTHONPATH}:~/.grc_gnuradio
+ * First install C++ modules from gr-rstt
+  * cd gr-rstt
+  * mkdir build
+  * cd build
+  * cmake ../
+  * make -j
+  * make install
+ * Then install Python stuf (a bit hackyk way) all files are installed
+   into ~/.grc_gnuradio directory
+  * cd ../..
+  * make localinstall
+ * Set PYTHONPATH in your ~/.bash_profile:
+  * export PYTHONPATH=${PYTHONPATH}:~/.grc_gnuradio
+ * Set GNU Radio local module path in ~/.gnuradio/config.conf
+   [grc]
+   local_blocks_path=/usr/local/share/gnuradio/grc/blocks/
 
