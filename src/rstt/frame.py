@@ -3,6 +3,13 @@
 import crcmod
 import struct
 
+class GPSInfo:
+  """GPS informations recieved for one channel."""
+  def __init__(self, pseudorange, doppler, status):
+    self.pseudorange = pseudorange
+    self.doppler = doppler
+    self.status = status
+
 class Frame:
     def __init__(self, frame_data):
         self._data = frame_data
@@ -48,8 +55,11 @@ class Frame:
         if self._crc3_ok:
             self._d_gps_t = struct.unpack("<f", self._data[72:76])
             self._d_78 = self._data[76:86] # TODO
-            self._d_gps_status = struct.unpack("12B", self._data[86:98])
-            self._d_gps_pseudorange = struct.unpack("<12d", self._data[98:194])
+            gps_status = struct.unpack("12B", self._data[86:98])
+            gps = struct.unpack("<24f", self._data[98:194])
+            self._d_gps = []
+            for idx in range(0, 12):
+                self._d_gps.append(GPSInfo(gps[2*idx], gps[2*idx+1], gps_status[idx]))
 
         if self._crc4_ok:
             self._d_198 = self._data[198:208] # TODO
