@@ -26,4 +26,6 @@ swig/rstt_swigPYTHON_wrap.cxx
 swig/rstt_swig_doc.i
 swig/cmake_install.cmake
 swig/rstt_swig_doc_swig_docs/
-
+Testing/
+lib/.unittests/
+python/.unittests/
