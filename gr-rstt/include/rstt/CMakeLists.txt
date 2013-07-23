@@ -22,5 +22,6 @@
 ########################################################################
 install(FILES
     api.h
-    symbols2bites.h DESTINATION include/rstt
+    symbols2bites.h
+    bites2bytes.h DESTINATION include/rstt
 )

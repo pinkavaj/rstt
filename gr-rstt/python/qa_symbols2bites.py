@@ -17,7 +17,6 @@
 from gnuradio import gr, gr_unittest, blocks
 from rstt_swig import symbols2bites
 
-
 _1 = (0, 1, )
 _0 = (1, 0, )
 _e0 = (0, 0, )

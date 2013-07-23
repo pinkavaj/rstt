@@ -10,7 +10,7 @@ Requirements:
 Install:
  * Remove __all__ files installed by older versions of RSTT
   (form: ~/.grc_gnuradio /usr/local ... )
-  if You does not do so, you will probably fall into strange troubles.
+  if You does not do so, you will probably fall into mysterious troubles.
 
  * First install C++ modules from gr-rstt
   * cd gr-rstt

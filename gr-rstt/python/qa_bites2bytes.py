@@ -1,9 +1,23 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
+# -*- coding: utf8 -*-
+#
+# Copyright 2013 Jiří Pinkava <j-pi@seznam.cz>
+#
+# This is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3, or (at your option)
+# any later version.
+#
+# This software is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
 
 from gnuradio import gr, gr_unittest, blocks
-from bites2bytes import bites2bytes
+from rstt_swig import bites2bytes
 
-class test_rstt_bites2bytes(gr_unittest.TestCase):
+class qa_bites2bytes(gr_unittest.TestCase):
 
     def setUp(self):
         self.tb = gr.top_block ()
@@ -20,7 +34,7 @@ class test_rstt_bites2bytes(gr_unittest.TestCase):
         result_data = tuple([int(x) for x in dst.data()])
         self.assertEqual(data_exp, result_data)
 
-    def test_rstt_symbosl2bites_00(self):
+    def test_00(self):
         data_src = \
                 (0, 0, 0, 0, 1, 0, 0, 0, 0, 1, ) + \
                 (0, 1, 1, 1, 1, 1, 1, 1, 1, 1, ) + \
@@ -30,7 +44,7 @@ class test_rstt_bites2bytes(gr_unittest.TestCase):
         test_block = bites2bytes(16)
         self.do(data_src, data_exp, test_block)
 
-    def test_rstt_symbosl2bites_01(self):
+    def test_01(self):
         data_src = \
                 (0, 1, 0, 1, 0, ) + \
                 (0, 0, 0, 0, 1, 0, 0, 0, 0, 1, ) + \
@@ -41,7 +55,7 @@ class test_rstt_bites2bytes(gr_unittest.TestCase):
         test_block = bites2bytes(16)
         self.do(data_src, data_exp, test_block)
 
-    def test_rstt_symbosl2bites_02(self):
+    def test_02(self):
         """Test single bit insertion."""
         data_src = \
                 (0, 0, 0, 0, 1, 0, 0, 1, 0, 1, ) + \
@@ -56,7 +70,7 @@ class test_rstt_bites2bytes(gr_unittest.TestCase):
         test_block = bites2bytes(16)
         self.do(data_src, data_exp, test_block)
 
-    def test_rstt_symbosl2bites_03(self):
+    def test_03(self):
         """Test single bit deletion."""
         data_src = \
                 (0, 0, 0, 0, 1, 0, 0, 1, 0, 1, ) + \
@@ -71,5 +85,5 @@ class test_rstt_bites2bytes(gr_unittest.TestCase):
         self.do(data_src, data_exp, test_block)
 
 if __name__ == '__main__':
-    gr_unittest.run(test_rstt_bites2bytes, "test_rstt_bites2bytes.xml")
+    gr_unittest.run(qa_bites2bytes, "qa_bites2bytes.xml")
 

@@ -27,6 +27,7 @@ link_directories(${Boost_LIBRARY_DIRS})
 
 list(APPEND rstt_sources
     symbols2bites_impl.cc
+    bites2bytes_impl.cc
 )
 
 add_library(gnuradio-rstt SHARED ${rstt_sources})

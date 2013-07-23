@@ -9,8 +9,11 @@
 
 %{
 #include "rstt/symbols2bites.h"
+#include "rstt/bites2bytes.h"
 %}
 
 
 %include "rstt/symbols2bites.h"
 GR_SWIG_BLOCK_MAGIC2(rstt, symbols2bites);
+%include "rstt/bites2bytes.h"
+GR_SWIG_BLOCK_MAGIC2(rstt, bites2bytes);

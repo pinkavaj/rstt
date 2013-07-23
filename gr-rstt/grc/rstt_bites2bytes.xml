@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<block>
+    <name>Bites2bytes</name>
+	<key>rstt_bites2bytes</key>
+	<category>RSTT</category>
+	<import>import rstt</import>
+	<make>rstt.bites2bytes($sync_nbytes)</make>
+	<param>
+		<name>Sync window size (bytes)</name>
+		<key>sync_nbytes</key>
+		<value>32</value>
+		<type>int</type>
+	</param>
+	<sink>
+		<name>in</name>
+		<type>byte</type>
+	</sink>
+	<source>
+		<name>out</name>
+		<type>short</type>
+	</source>
+</block>
+
