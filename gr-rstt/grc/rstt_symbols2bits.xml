@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <block>
-    <name>Symbols2bites</name>
-    <key>rstt_symbols2bites</key>
+    <name>Symbols2bits</name>
+    <key>rstt_symbols2bits</key>
     <category>RSTT</category>
     <import>import rstt</import>
-    <make>rstt.symbols2bites($sync_nbites)</make>
+    <make>rstt.symbols2bits($sync_nbits)</make>
     <param>
-        <name>Sync window size (bites)</name>
-        <key>sync_nbites</key>
+        <name>Sync window size (bits)</name>
+        <key>sync_nbits</key>
         <value>20*10</value>
         <type>int</type>
     </param>

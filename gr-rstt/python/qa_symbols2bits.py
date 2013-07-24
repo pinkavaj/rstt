@@ -15,14 +15,14 @@
 #
 
 from gnuradio import gr, gr_unittest, blocks
-from rstt_swig import symbols2bites
+from rstt_swig import symbols2bits
 
 _1 = (0, 1, )
 _0 = (1, 0, )
 _e0 = (0, 0, )
 _e1 = (1, 1, )
 
-class qa_symbols2bites(gr_unittest.TestCase):
+class qa_symbols2bits(gr_unittest.TestCase):
 
     def setUp(self):
         self.tb = gr.top_block ()
@@ -42,13 +42,13 @@ class qa_symbols2bites(gr_unittest.TestCase):
     def test_00(self):
         data_src = _0 + _0 + _0*16 + _0
         data_exp = (0, 0, )
-        test_block = symbols2bites(16)
+        test_block = symbols2bits(16)
         self.do(data_src, data_exp, test_block)
 
     def test_01(self):
         data_src = _0 + _1 + _0*16 + _0
         data_exp = (0, 1, )
-        test_block = symbols2bites(16)
+        test_block = symbols2bits(16)
         self.do(data_src, data_exp, test_block)
 
     def test_02(self):
@@ -56,7 +56,7 @@ class qa_symbols2bites(gr_unittest.TestCase):
         _10 = _1 + _0
         data_src = _10*16 + (0, ) + _10*16 + _0*4
         data_exp = (1, 0)*16 + (1, 0)*10
-        test_block = symbols2bites(16)
+        test_block = symbols2bits(16)
         self.do(data_src, data_exp, test_block)
 
     def test_03(self):
@@ -64,7 +64,7 @@ class qa_symbols2bites(gr_unittest.TestCase):
         _10 = _1 + _0
         data_src = (0, ) + _10*16 + (0, ) + _10*16 + _0*4
         data_exp = (1, 0)*16 + (255, ) + (1, 0)*9 + (1, )
-        test_block = symbols2bites(16)
+        test_block = symbols2bits(16)
         self.do(data_src, data_exp, test_block)
 
     def test_04(self):
@@ -77,7 +77,7 @@ class qa_symbols2bites(gr_unittest.TestCase):
                 (255, 255, 255, ) + \
                 (0, 0, 1, 0, 0, 0, 1) + \
                 (1, 0, 0, 1, 0, 0, 0, 1)
-        test_block = symbols2bites(16)
+        test_block = symbols2bits(16)
         self.do(data_src, data_exp, test_block)
 
     def test_05(self):
@@ -90,9 +90,9 @@ class qa_symbols2bites(gr_unittest.TestCase):
                 (255, 255, 255, ) + \
                 (1, 0, 0, 1, 0, 0, 0, 1) + \
                 (1, 0, 0, 1, 0, 0, 0)
-        test_block = symbols2bites(16)
+        test_block = symbols2bits(16)
         self.do(data_src, data_exp, test_block)
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_symbols2bites, "qa_symbols2bites.xml")
+    gr_unittest.run(qa_symbols2bits, "qa_symbols2bits.xml")
 

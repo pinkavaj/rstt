@@ -15,9 +15,9 @@
 #
 
 from gnuradio import gr, gr_unittest, blocks
-from rstt_swig import bites2bytes
+from rstt_swig import bits2bytes
 
-class qa_bites2bytes(gr_unittest.TestCase):
+class qa_bits2bytes(gr_unittest.TestCase):
 
     def setUp(self):
         self.tb = gr.top_block ()
@@ -41,7 +41,7 @@ class qa_bites2bytes(gr_unittest.TestCase):
                 (0, 1, 0, 0, 1, 1, 0, 1, 1, 1, ) + \
                 (0, 0, 0, 0, 0, 0, 0, 0, 0, 1, ) * 18
         data_exp = (0x08, 0xff, 0xd9 )
-        test_block = bites2bytes(16)
+        test_block = bits2bytes(16)
         self.do(data_src, data_exp, test_block)
 
     def test_01(self):
@@ -52,7 +52,7 @@ class qa_bites2bytes(gr_unittest.TestCase):
                 (0, 1, 0, 0, 1, 1, 0, 1, 1, 1, ) + \
                 (0, 0, 0, 0, 0, 0, 0, 0, 0, 1, ) * 18
         data_exp = (0x08, 0xff, 0xd9 )
-        test_block = bites2bytes(16)
+        test_block = bits2bytes(16)
         self.do(data_src, data_exp, test_block)
 
     def test_02(self):
@@ -67,7 +67,7 @@ class qa_bites2bytes(gr_unittest.TestCase):
                 (0, 1, 0, 0, 1, 1, 0, 1, 1, 1, ) + \
                 (0, 0, 0, 0, 0, 0, 0, 0, 0, 1, ) * 18
         data_exp = (0x48, 0xff,) + (0, )*16 + (0xd9, 0x3a, 0xd9, )
-        test_block = bites2bytes(16)
+        test_block = bits2bytes(16)
         self.do(data_src, data_exp, test_block)
 
     def test_03(self):
@@ -81,9 +81,9 @@ class qa_bites2bytes(gr_unittest.TestCase):
                 (0, 1, 0, 0, 1, 1, 0, 1, 1, 1, ) + \
                 (0, 0, 0, 0, 0, 0, 0, 0, 0, 1, ) * 18
         data_exp = (0x48, 0xff,) + (0, )*16 + (0xd9, 0x1ab, 0xd9, )
-        test_block = bites2bytes(16)
+        test_block = bits2bytes(16)
         self.do(data_src, data_exp, test_block)
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_bites2bytes, "qa_bites2bytes.xml")
+    gr_unittest.run(qa_bits2bytes, "qa_bits2bytes.xml")
 

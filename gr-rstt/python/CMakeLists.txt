@@ -41,5 +41,5 @@ include(GrTest)
 
 set(GR_TEST_TARGET_DEPS gnuradio-rstt)
 set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/swig)
-GR_ADD_TEST(qa_symbols2bites ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_symbols2bites.py)
-GR_ADD_TEST(qa_bites2bytes ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_bites2bytes.py)
+GR_ADD_TEST(qa_symbols2bits ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_symbols2bits.py)
+GR_ADD_TEST(qa_bits2bytes ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_bits2bytes.py)

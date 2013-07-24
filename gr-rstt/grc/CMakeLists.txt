@@ -18,6 +18,6 @@
 # Boston, MA 02110-1301, USA.
 
 install(FILES
-    rstt_symbols2bites.xml
-    rstt_bites2bytes.xml DESTINATION share/gnuradio/grc/blocks
+    rstt_symbols2bits.xml
+    rstt_bits2bytes.xml DESTINATION share/gnuradio/grc/blocks
 )

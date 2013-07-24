@@ -13,7 +13,8 @@ lib/cmake_install.cmake
 lib/test-rstt
 lib/test_rstt_test.sh
 python/cmake_install.cmake
-python/qa_symbols2bites_test.sh
+python/qa_symbols2bits_test.sh
+python/qa_bits2bytes_test.sh
 python_compile_helper.py
 swig/_rstt_swig_doc_tag
 swig/_rstt_swig_doc_tag.cpp

@@ -18,26 +18,26 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "symbols2bites_impl.h"
+#include "symbols2bits_impl.h"
 
 #include <stdio.h>
 
 namespace gr {
   namespace rstt {
 
-    symbols2bites::sptr
-    symbols2bites::make(int sync_nbites)
+    symbols2bits::sptr
+    symbols2bits::make(int sync_nbits)
     {
       return gnuradio::get_initial_sptr
-        (new symbols2bites_impl(sync_nbites));
+        (new symbols2bits_impl(sync_nbits));
     }
 
-    symbols2bites_impl::symbols2bites_impl(int sync_nbites)
-      : gr::block("symbols2bites",
+    symbols2bits_impl::symbols2bits_impl(int sync_nbits)
+      : gr::block("symbols2bits",
               gr::io_signature::make(1, 1, sizeof(in_t)),
               gr::io_signature::make(1, 1, sizeof(out_t))),
-        roll_out_nbites(0),
-        sync_win_len(2*sync_nbites),
+        roll_out_nbits(0),
+        sync_win_len(2*sync_nbits),
         sync_win_offs(0),
         sync_win(new win_t[sync_win_len]),
         sync_win_idx(0),
@@ -47,19 +47,19 @@ namespace gr {
         memset(sync_win.get(), 1, sync_win_len*sizeof(win_t));
     }
 
-    symbols2bites_impl::~symbols2bites_impl()
+    symbols2bits_impl::~symbols2bits_impl()
     {
     }
 
     void
-    symbols2bites_impl::forecast(int noutput_items, gr_vector_int &ninput_items_required)
+    symbols2bits_impl::forecast(int noutput_items, gr_vector_int &ninput_items_required)
     {
         ninput_items_required[0] = 2 * noutput_items + fill_in_nsymbols + 1;
         printf("noutput_items %d ninput_items_required %d\n", noutput_items, ninput_items_required[0]);
     }
 
     int
-    symbols2bites_impl::general_work (int noutput_items,
+    symbols2bits_impl::general_work (int noutput_items,
                        gr_vector_int &ninput_items,
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
@@ -85,14 +85,14 @@ namespace gr {
     }
 
     bool
-    symbols2bites_impl::is_out_of_sync() const
+    symbols2bits_impl::is_out_of_sync() const
     {
         return (sync_win_offs == 0 && sync_win_nerrs[0] > sync_win_nerrs[1]) ||
           (sync_win_offs == 1 && sync_win_nerrs[0] < sync_win_nerrs[1]);
     }
 
-    symbols2bites_impl::win_t
-    symbols2bites_impl::put_symbol(const in_t *in)
+    symbols2bits_impl::win_t
+    symbols2bits_impl::put_symbol(const in_t *in)
     {
       const win_t val_old = sync_win[sync_win_idx];
       const win_t val_new = win_t(in[1]) - win_t(in[0]);
@@ -107,13 +107,13 @@ namespace gr {
     }
 
     int
-    symbols2bites_impl::roll_out(int out_len, int &consume, const in_t *in, out_t *out)
+    symbols2bits_impl::roll_out(int out_len, int &consume, const in_t *in, out_t *out)
     {
-        if (!roll_out_nbites) {
+        if (!roll_out_nbits) {
             return 0;
         }
         const int nroll = std::min(
-            std::min(roll_out_nbites, out_len),
+            std::min(roll_out_nbits, out_len),
             consume/2);
         int produced = 0;
         for ( ; produced < nroll; ++produced) {
@@ -123,8 +123,8 @@ namespace gr {
             consume -= 2;
         }
 
-        roll_out_nbites -= produced;
-        if (roll_out_nbites) {
+        roll_out_nbits -= produced;
+        if (roll_out_nbits) {
           return -produced;
         }
         if (is_out_of_sync()) {
@@ -134,7 +134,7 @@ namespace gr {
     }
 
     void
-    symbols2bites_impl::shift_bite(const in_t *in, out_t *out)
+    symbols2bits_impl::shift_bite(const in_t *in, out_t *out)
     {
       const win_t val1 = put_symbol(in);
       const win_t val2 = put_symbol(in+1);
@@ -149,7 +149,7 @@ namespace gr {
     }
 
     int
-    symbols2bites_impl::work_convert(int out_len,
+    symbols2bits_impl::work_convert(int out_len,
                        int &consume,
                        const in_t *in,
                        out_t *out)
@@ -164,7 +164,7 @@ namespace gr {
 
         while (consume > 2 && produced < out_len) {
           if (is_out_of_sync()) {
-            roll_out_nbites += sync_win_len/2 - std::max(sync_win_nerrs[0], sync_win_nerrs[1]);
+            roll_out_nbits += sync_win_len/2 - std::max(sync_win_nerrs[0], sync_win_nerrs[1]);
             consume_ = consume;
             const int p = roll_out(out_len - produced, consume, in, out);
             if (p < 0) {
@@ -187,7 +187,7 @@ namespace gr {
     }
 
     int
-    symbols2bites_impl::work_fill(int out_len,
+    symbols2bits_impl::work_fill(int out_len,
                        int &consume,
                        const in_t *in,
                        out_t *out)

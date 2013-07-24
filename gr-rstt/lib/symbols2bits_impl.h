@@ -13,16 +13,16 @@
  * GNU General Public License for more details.
  */
 
-#ifndef INCLUDED_RSTT_SYMBOLS2BITES_IMPL_H
-#define INCLUDED_RSTT_SYMBOLS2BITES_IMPL_H
+#ifndef INCLUDED_RSTT_SYMBOLS2BITS_IMPL_H
+#define INCLUDED_RSTT_SYMBOLS2BITS_IMPL_H
 
-#include <rstt/symbols2bites.h>
+#include <rstt/symbols2bits.h>
 #include <boost/shared_array.hpp>
 
 namespace gr {
   namespace rstt {
 
-    class symbols2bites_impl : public symbols2bites
+    class symbols2bits_impl : public symbols2bits
     {
      private:
       typedef unsigned char in_t;
@@ -31,8 +31,8 @@ namespace gr {
 
       /** Number of error in even/odd synchronization windw. */
       int sync_win_nerrs[2];
-      /** Number of bites to send before normal operation can continue. */
-      int roll_out_nbites;
+      /** Number of bits to send before normal operation can continue. */
+      int roll_out_nbits;
       /** Lenght of synchronization window. */
       int sync_win_len;
       /** Current synchronized window, odd = 0, even = 1. */
@@ -65,8 +65,8 @@ namespace gr {
               out_t *out);
 
      public:
-      symbols2bites_impl(int sync_nbites);
-      ~symbols2bites_impl();
+      symbols2bits_impl(int sync_nbits);
+      ~symbols2bits_impl();
 
       void forecast(int noutput_items, gr_vector_int &ninput_items_required);
 
@@ -79,5 +79,5 @@ namespace gr {
   } // namespace rstt
 } // namespace gr
 
-#endif /* INCLUDED_RSTT_SYMBOLS2BITES_IMPL_H */
+#endif /* INCLUDED_RSTT_SYMBOLS2BITS_IMPL_H */
 

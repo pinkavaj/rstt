@@ -8,12 +8,12 @@
 %include "rstt_swig_doc.i"
 
 %{
-#include "rstt/symbols2bites.h"
-#include "rstt/bites2bytes.h"
+#include "rstt/symbols2bits.h"
+#include "rstt/bits2bytes.h"
 %}
 
 
-%include "rstt/symbols2bites.h"
-GR_SWIG_BLOCK_MAGIC2(rstt, symbols2bites);
-%include "rstt/bites2bytes.h"
-GR_SWIG_BLOCK_MAGIC2(rstt, bites2bytes);
+%include "rstt/symbols2bits.h"
+GR_SWIG_BLOCK_MAGIC2(rstt, symbols2bits);
+%include "rstt/bits2bytes.h"
+GR_SWIG_BLOCK_MAGIC2(rstt, bits2bytes);

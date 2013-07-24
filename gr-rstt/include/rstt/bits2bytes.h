@@ -19,8 +19,8 @@
  */
 
 
-#ifndef INCLUDED_RSTT_SYMBOLS2BITES_H
-#define INCLUDED_RSTT_SYMBOLS2BITES_H
+#ifndef INCLUDED_RSTT_BITS2BYTES_H
+#define INCLUDED_RSTT_BITS2BYTES_H
 
 #include <rstt/api.h>
 #include <gnuradio/block.h>
@@ -33,24 +33,24 @@ namespace gr {
      * \ingroup rstt
      *
      */
-    class RSTT_API symbols2bites : virtual public gr::block
+    class RSTT_API bits2bytes : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<symbols2bites> sptr;
+      typedef boost::shared_ptr<bits2bytes> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of rstt::symbols2bites.
+       * \brief Return a shared_ptr to a new instance of rstt::bits2bytes.
        *
-       * To avoid accidental use of raw pointers, rstt::symbols2bites's
+       * To avoid accidental use of raw pointers, rstt::bits2bytes's
        * constructor is in a private implementation
-       * class. rstt::symbols2bites::make is the public interface for
+       * class. rstt::bits2bytes::make is the public interface for
        * creating new instances.
        */
-      static sptr make(int sync_nbites);
+      static sptr make(int sync_nbytes);
     };
 
   } // namespace rstt
 } // namespace gr
 
-#endif /* INCLUDED_RSTT_SYMBOLS2BITES_H */
+#endif /* INCLUDED_RSTT_BITS2BYTES_H */
 

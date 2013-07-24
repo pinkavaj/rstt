@@ -23,24 +23,24 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "bites2bytes_impl.h"
+#include "bits2bytes_impl.h"
 
 namespace gr {
   namespace rstt {
 
-    bites2bytes::sptr
-    bites2bytes::make(int sync_nbytes)
+    bits2bytes::sptr
+    bits2bytes::make(int sync_nbytes)
     {
       return gnuradio::get_initial_sptr
-        (new bites2bytes_impl(sync_nbytes));
+        (new bits2bytes_impl(sync_nbytes));
     }
 
-    bites2bytes_impl::bites2bytes_impl(int sync_nbytes)
-      : gr::block("bites2bytes",
+    bits2bytes_impl::bits2bytes_impl(int sync_nbytes)
+      : gr::block("bits2bytes",
               gr::io_signature::make(1, 1, sizeof(in_t)),
               gr::io_signature::make(1, 1, sizeof(out_t))),
-        sync_nbites(10*sync_nbytes),
-        fill_in_bites(sync_nbites),
+        sync_nbits(10*sync_nbytes),
+        fill_in_bits(sync_nbits),
         in_idx(0),
         do_bit_resync(true),
         send_bytes_remain(0),
@@ -50,19 +50,18 @@ namespace gr {
         memset(sync_win, 0, sizeof(sync_win));
     }
 
-    bites2bytes_impl::~bites2bytes_impl()
+    bits2bytes_impl::~bits2bytes_impl()
     {
     }
 
     void
-    bites2bytes_impl::forecast(int noutput_items, gr_vector_int &ninput_items_required)
+    bits2bytes_impl::forecast(int noutput_items, gr_vector_int &ninput_items_required)
     {
-        ninput_items_required[0] = 10*noutput_items + sync_nbites + 20;
-        //ninput_items_required[0] = 10*noutput_items + sync_nbites + 20 + shit;
+        ninput_items_required[0] = 10*noutput_items + sync_nbits + 20;
     }
 
     int
-    bites2bytes_impl::general_work (int noutput_items,
+    bits2bytes_impl::general_work (int noutput_items,
                        gr_vector_int &ninput_items,
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
@@ -75,18 +74,18 @@ namespace gr {
             return 0;
         }
         const int produced = work_convert(noutput_items, in_len, in, out);
-        const int consume = in_idx - sync_nbites;
+        const int consume = in_idx - sync_nbits;
         consume_each(consume);
         in_idx -= consume;
 
         return produced;
     }
 
-    bites2bytes_impl::out_t
-    bites2bytes_impl::get_byte(const in_t *in, bool start_bite_missing) const
+    bits2bytes_impl::out_t
+    bits2bytes_impl::get_byte(const in_t *in, bool start_bite_missing) const
     {
         out_t status = STATUS_INVALID_START;
-        int idx = in_idx - sync_nbites;
+        int idx = in_idx - sync_nbits;
         if (!start_bite_missing) {
             if (in[idx++] == 0) {
                 status = 0;
@@ -109,7 +108,7 @@ namespace gr {
     }
 
     int
-    bites2bytes_impl::get_sync_offs() const
+    bits2bytes_impl::get_sync_offs() const
     {
         // by default try to keep sync at current position
         int sync_offs_new = sync_offs;
@@ -135,7 +134,7 @@ namespace gr {
     }
 
     int
-    bites2bytes_impl::resync_stream(int out_len, int produced, int in_len,
+    bits2bytes_impl::resync_stream(int out_len, int produced, int in_len,
         const in_t *in, out_t *out)
     {
         if (!do_bit_resync && send_bytes_remain == 0) {
@@ -143,7 +142,7 @@ namespace gr {
         }
         while (produced < out_len && in_idx < in_len - 9 && send_bytes_remain) {
             out[produced++] = get_byte(in);
-            shift_bites(in);
+            shift_bits(in);
             --send_bytes_remain;
         }
         if (send_bytes_remain) {
@@ -154,7 +153,7 @@ namespace gr {
         if (shift == 9) {
             if (in_idx < in_len - 18 && produced < out_len) {
                 out[produced++] = get_byte(in, true);
-                shift_bites(in, 9);
+                shift_bits(in, 9);
                 sync_offs = of;
                 return produced;
             }
@@ -163,7 +162,7 @@ namespace gr {
                 return produced;
             }
             if (in_idx < in_len - 9 - shift) {
-                shift_bites(in, shift);
+                shift_bits(in, shift);
                 sync_offs = of;
                 return produced;
             }
@@ -172,11 +171,11 @@ namespace gr {
         return -produced;
     }
 
-    void bites2bytes_impl::shift_bites(const in_t *in, int nbites)
+    void bits2bytes_impl::shift_bits(const in_t *in, int nbits)
     {
-        for (const int end = in_idx + nbites; in_idx < end; ++in_idx) {
-            const in_t _b0 = in[in_idx - sync_nbites];
-            const in_t _b9 = in[in_idx - sync_nbites + 9];
+        for (const int end = in_idx + nbits; in_idx < end; ++in_idx) {
+            const in_t _b0 = in[in_idx - sync_nbits];
+            const in_t _b9 = in[in_idx - sync_nbits + 9];
             const in_t b0 = in[in_idx];
             const in_t b9 = in[in_idx + 9];
 
@@ -185,7 +184,7 @@ namespace gr {
     }
 
     void
-    bites2bytes_impl::sync_win_idx_pp(int inc) {
+    bits2bytes_impl::sync_win_idx_pp(int inc) {
         sync_win[sync_win_idx++] += inc;
         if (sync_win_idx > 9) {
             sync_win_idx = 0;
@@ -193,7 +192,7 @@ namespace gr {
     }
 
     int
-    bites2bytes_impl::work_convert(int out_len,
+    bits2bytes_impl::work_convert(int out_len,
         int in_len,
         const in_t *in,
         out_t *out)
@@ -208,7 +207,7 @@ namespace gr {
         while (in_idx < in_len - 19 && produced < out_len) {
             const int so = get_sync_offs();
             if (so != sync_offs) {
-                send_bytes_remain = sync_nbites / 10 / 2 - 1;
+                send_bytes_remain = sync_nbits / 10 / 2 - 1;
                 produced = resync_stream(out_len, produced, in_len, in, out);
                 if (produced < 0) {
                     return -produced;
@@ -216,24 +215,24 @@ namespace gr {
                 continue;
             }
             out[produced++] = get_byte(in);
-            shift_bites(in);
+            shift_bits(in);
         }
         return produced;
     }
 
     bool
-    bites2bytes_impl::work_fill(int in_len, const in_t *in)
+    bits2bytes_impl::work_fill(int in_len, const in_t *in)
     {
-        if (!fill_in_bites) {
+        if (!fill_in_bits) {
             return true;
         }
 
-        const int len = in_idx + std::min(fill_in_bites, in_len - in_idx - 9);
+        const int len = in_idx + std::min(fill_in_bits, in_len - in_idx - 9);
         for ( ; in_idx < len; ++in_idx ) {
             sync_win_idx_pp(in[in_idx] == 0 && in[in_idx + 9] == 1);
         }
-        fill_in_bites -= len;
-        return fill_in_bites == 0;
+        fill_in_bits -= len;
+        return fill_in_bits == 0;
     }
 
   } /* namespace rstt */
