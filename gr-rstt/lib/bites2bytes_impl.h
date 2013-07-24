@@ -29,8 +29,46 @@ namespace gr {
     class bites2bytes_impl : public bites2bytes
     {
      private:
-       typedef signed char in_t;
-       typedef unsigned short out_t;
+      typedef signed char in_t;
+      typedef unsigned short out_t;
+
+      enum {
+          STATUS_INVALID_START = 0x100,
+          STATUS_INVALID_BYTE = 0x200,
+          STATUS_INVALID_STOP = 0x400
+      };
+
+      /** Lenght of sync window in bites, */
+      int sync_nbites;
+      /** Number of bites to fill in, before normal work can start. */
+      int fill_in_bites;
+      /** Index to firts input bit which was not processed at all. */
+      int in_idx;
+
+      /** If true, bites are droppend until synchronization is achieved. */
+      bool do_bit_resync;
+      /** Bytes remaining to send before normal operation can continue. */
+      int send_bytes_remain;
+      /** Lenght of sync window in bites. */
+      int sync_win[10];
+      int sync_win_idx;
+      int sync_offs;
+
+      out_t get_byte(const in_t *in, bool start_bite_missing = false) const;
+      int get_sync_offs() const;
+      int resync_stream(int out_len, int produced, int in_len, const in_t *in, out_t *out);
+      void shift_bites(const in_t *in, int nbites = 10);
+
+      /** Update current sync value by 'inc' and move to next sync window
+        position. */
+      void sync_win_idx_pp(int inc = 0);
+
+      int work_convert(int out_len,
+              int in_len,
+              const in_t *in,
+              out_t *out);
+
+      bool work_fill(int in_len, const in_t *in);
 
      public:
       bites2bytes_impl(int sync_nbytes);
