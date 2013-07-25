@@ -23,9 +23,11 @@ Install:
    into ~/.grc_gnuradio directory
   * cd ../..
   * make localinstall
- * Set PYTHONPATH in your ~/.bash_profile:
-  * export PYTHONPATH=${PYTHONPATH}:~/.grc_gnuradio
+
+I You installed RSTT into /usr/local (default location) yaou should:
  * Set GNU Radio local module path in ~/.gnuradio/config.conf
    [grc]
    local_blocks_path=/usr/local/share/gnuradio/grc/blocks/
+ * Set PYTHONPATH in your ~/.bash_profile:
+  * export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python2.7/site-packages/rstt/
 
