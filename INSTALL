@@ -24,10 +24,16 @@ Install:
   * cd ../..
   * make localinstall
 
-I You installed RSTT into /usr/local (default location) yaou should:
+I You installed RSTT into /usr/local (default location) there is feq
+aditional steps You might want to do:
+
  * Set GNU Radio local module path in ~/.gnuradio/config.conf
    [grc]
    local_blocks_path=/usr/local/share/gnuradio/grc/blocks/
  * Set PYTHONPATH in your ~/.bash_profile:
   * export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python2.7/site-packages/
+ * set LD path to /usr/local/lib in /etc/ld.so.conf.d/local.conf
+   /usr/local/lib
+ * update LD path
+   ldconfig
 
