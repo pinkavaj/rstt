@@ -55,7 +55,6 @@ namespace gr {
     symbols2bits_impl::forecast(int noutput_items, gr_vector_int &ninput_items_required)
     {
         ninput_items_required[0] = 2 * noutput_items + fill_in_nsymbols + 1;
-        printf("noutput_items %d ninput_items_required %d\n", noutput_items, ninput_items_required[0]);
     }
 
     int
@@ -69,7 +68,6 @@ namespace gr {
 
         int consume = ninput_items[0];
         int produced = work_fill(noutput_items, consume, in, out);
-        printf("consumed %d\n", ninput_items[0] - consume);
 
         if (!fill_in_nsymbols) {
           in += ninput_items[0] - consume;
@@ -80,7 +78,6 @@ namespace gr {
 
         consume_each(ninput_items[0] - consume);
 
-        printf("consumed %d produced %d\n", ninput_items[0] - consume, produced);
         return produced;
     }
 

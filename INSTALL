@@ -29,5 +29,5 @@ I You installed RSTT into /usr/local (default location) yaou should:
    [grc]
    local_blocks_path=/usr/local/share/gnuradio/grc/blocks/
  * Set PYTHONPATH in your ~/.bash_profile:
-  * export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python2.7/site-packages/rstt/
+  * export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python2.7/site-packages/
 
