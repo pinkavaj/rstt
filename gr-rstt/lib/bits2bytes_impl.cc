@@ -114,7 +114,7 @@ namespace gr {
         int sync_offs_new = sync_offs;
         int max = sync_win[sync_offs_new];
         // preffer sync to +-1 bit
-        if (sync_win[(sync_offs - 1) % 10] > max) {
+        if (sync_win[(sync_offs - 1 + 10) % 10] > max) {
             sync_offs_new = (sync_offs - 1) % 10;
             max = sync_win[sync_offs_new];
         } else
@@ -149,7 +149,7 @@ namespace gr {
             return -produced;
         }
         const int of = get_sync_offs();
-        const int shift = (of - sync_offs) % 10;
+        const int shift = (of - sync_offs + 10) % 10;
         if (shift == 9) {
             if (in_idx < in_len - 18 && produced < out_len) {
                 out[produced++] = get_byte(in, true);
