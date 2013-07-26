@@ -84,6 +84,21 @@ class qa_bits2bytes(gr_unittest.TestCase):
         test_block = bits2bytes(16)
         self.do(data_src, data_exp, test_block)
 
+    def test_04(self):
+        """Multibite shift 4b"""
+        data_src = \
+                (0, 0, 0, 0, 1, 0, 0, 1, 0, 1, ) + \
+                (0, 1, 1, 1, 1, 1, 1, 1, 1, 1, ) + \
+                (0, 0, 0, 0, 0, 0, 0, 0, 0, 1, ) * 16 + \
+                (0, 1, 0, 0, 1, 1, 0, 1, 1, 1, ) + \
+                (0, 0, 1, 0, ) + \
+                (0, 1, 1, 0, 1, 0, 1, 0, 1, 1, ) + \
+                (0, 1, 0, 0, 1, 1, 0, 1, 1, 1, ) + \
+                (0, 0, 0, 0, 0, 0, 0, 0, 0, 1, ) * 19
+        data_exp = (0x48, 0xff,) + (0, )*16 + (0xd9, 0xAB, 0xd9, 0x00 )
+        test_block = bits2bytes(16)
+        self.do(data_src, data_exp, test_block)
+
 if __name__ == '__main__':
     gr_unittest.run(qa_bits2bytes, "qa_bits2bytes.xml")
 
