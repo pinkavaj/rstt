@@ -93,7 +93,7 @@ namespace gr {
         }
         out_t B = 0;
         for (const int end = idx + 8; idx < end; ++idx) {
-            const out_t b = in[idx];
+            const in_t b = in[idx];
             B >>= 1;
             if (b == -1) {
                 status |= STATUS_INVALID_BYTE;
