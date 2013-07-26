@@ -149,21 +149,24 @@ namespace gr {
             return -produced;
         }
         const int of = get_sync_offs();
-        const int shift = of - sync_offs % 10;
+        const int shift = (of - sync_offs) % 10;
         if (shift == 9) {
             if (in_idx < in_len - 18 && produced < out_len) {
                 out[produced++] = get_byte(in, true);
                 shift_bits(in, 9);
                 sync_offs = of;
+                do_bit_resync = false;
                 return produced;
             }
         } else {
             if (shift == 0) {
+                do_bit_resync = false;
                 return produced;
             }
             if (in_idx < in_len - 9 - shift) {
                 shift_bits(in, shift);
                 sync_offs = of;
+                do_bit_resync = false;
                 return produced;
             }
         }
