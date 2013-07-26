@@ -184,10 +184,10 @@ namespace gr {
     }
 
     int
-    symbols2bits_impl::work_fill(int out_len,
+    symbols2bits_impl::work_fill(int,
                        int &consume,
                        const in_t *in,
-                       out_t *out)
+                       out_t *)
     {
         if (!fill_in_nsymbols) {
             return 0;
