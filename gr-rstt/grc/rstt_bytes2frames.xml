@@ -22,7 +22,7 @@
         <vlen>240</vlen>
     </source>
     <doc>
-        Threshold - <0. - 1.>, output only packets with at least 'threshold' %
+        Threshold - &lt;0. - 1.&gt;, output only packets with at least 'threshold' %
         correlation bytes. Drop all toher (badly broken packets).
     </doc>
 </block>
