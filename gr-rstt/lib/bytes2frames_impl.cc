@@ -97,7 +97,6 @@ namespace gr {
     {
         const int n = noutput_items*PACKET_SIZE;
         ninput_items_required[0] = more ? n+239 : n;
-        printf("noutput_items %d ninput_items_required %d\n", noutput_items, ninput_items_required[0]);
     }
 
     int
@@ -112,7 +111,6 @@ namespace gr {
 
         int consumed = 0;
         const int produced = work(noutput_items, in_len, consumed, in, out);
-        printf("WORK produced %d in_len %d consumed %d\n", produced, in_len, consumed);
 
         consume_each(consumed);
 
@@ -129,13 +127,11 @@ namespace gr {
         memcpy(out+missing, in, (PACKET_SIZE-missing)*sizeof(out_t));
         int corr = 0;
         for (int n = 0; n < NSYNC_BYTES; ++n) {
-            printf("S: %2x ", out[SYNC_BYTES[n].idx]);
             if ((out[SYNC_BYTES[n].idx] & 0xff) == SYNC_BYTES[n].value) {
                 ++corr;
             } else {
                 out[SYNC_BYTES[n].idx] |= STATUS_ERR_SYN;
             }
-            printf("Z: %2x ", out[SYNC_BYTES[n].idx]);
         }
         return corr >= threshold;
     }
