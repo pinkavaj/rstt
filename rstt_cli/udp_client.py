@@ -1,4 +1,4 @@
-#!/bin/sh/python3
+#!/usr/bin/python3
 
 import socket
 from frame import Frame
@@ -46,11 +46,11 @@ class UdpClient:
     def _dump_frame(self, frame):
         if not self._data_log:
             return
-        self._dump_frame_gps(frame)
-        #self._dump_frame_channels(frame)
+        #self._dump_frame_gps(frame)
+        self._dump_frame_channels(frame)
 
     def _dump_frame_channels(self, frame):
-        if not frame._crc1_ok:
+        if not frame._crc2_ok:
             s = "\n"
         else:
             s = "%d;%d;%d;%d;%d;%d;%d;%d\n" % (
