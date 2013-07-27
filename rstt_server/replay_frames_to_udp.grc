@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='ASCII'?>
 <flow_graph>
-  <timestamp>Sat Jul 27 23:57:43 2013</timestamp>
+  <timestamp>Sun Jul 28 00:35:26 2013</timestamp>
   <block>
     <key>options</key>
     <param>
       <key>id</key>
-      <value>top_block</value>
+      <value>replay_frames_to_udp</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -21,7 +21,7 @@
     </param>
     <param>
       <key>description</key>
-      <value></value>
+      <value>Read frames from file and sent them to UDP socket</value>
     </param>
     <param>
       <key>window_size</key>
@@ -29,7 +29,7 @@
     </param>
     <param>
       <key>generate_options</key>
-      <value>wx_gui</value>
+      <value>no_gui</value>
     </param>
     <param>
       <key>category</key>
@@ -37,7 +37,7 @@
     </param>
     <param>
       <key>run_options</key>
-      <value>prompt</value>
+      <value>run</value>
     </param>
     <param>
       <key>run</key>
@@ -64,7 +64,7 @@
     <key>variable</key>
     <param>
       <key>id</key>
-      <value>samp_rate</value>
+      <value>file_name_</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -72,11 +72,54 @@
     </param>
     <param>
       <key>value</key>
-      <value>240*100</value>
+      <value>file_name</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(10, 170)</value>
+      <value>(207, 113)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>blocks_file_source</key>
+    <param>
+      <key>id</key>
+      <value>blocks_file_source_0</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>file</key>
+      <value>file_name_</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>short</value>
+    </param>
+    <param>
+      <key>repeat</key>
+      <value>False</value>
+    </param>
+    <param>
+      <key>vlen</key>
+      <value>240</value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(209, 26)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -99,11 +142,11 @@
     </param>
     <param>
       <key>samples_per_second</key>
-      <value>samp_rate</value>
+      <value>rate</value>
     </param>
     <param>
       <key>vlen</key>
-      <value>1</value>
+      <value>240</value>
     </param>
     <param>
       <key>affinity</key>
@@ -115,7 +158,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(353, 75)</value>
+      <value>(396, 33)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -123,38 +166,139 @@
     </param>
   </block>
   <block>
-    <key>blocks_stream_to_vector</key>
+    <key>parameter</key>
     <param>
       <key>id</key>
-      <value>blocks_stream_to_vector_0</value>
+      <value>file_name</value>
     </param>
     <param>
       <key>_enabled</key>
       <value>True</value>
     </param>
     <param>
-      <key>type</key>
-      <value>short</value>
+      <key>label</key>
+      <value>FileName</value>
     </param>
     <param>
-      <key>num_items</key>
-      <value>240</value>
-    </param>
-    <param>
-      <key>vlen</key>
-      <value>1</value>
-    </param>
-    <param>
-      <key>affinity</key>
+      <key>value</key>
       <value></value>
     </param>
     <param>
-      <key>minoutbuf</key>
-      <value>0</value>
+      <key>type</key>
+      <value>string</value>
+    </param>
+    <param>
+      <key>short_id</key>
+      <value>f</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(542, 75)</value>
+      <value>(206, 185)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>parameter</key>
+    <param>
+      <key>id</key>
+      <value>rate</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>label</key>
+      <value>rate</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>100</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>intx</value>
+    </param>
+    <param>
+      <key>short_id</key>
+      <value>r</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(393, 95)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>parameter</key>
+    <param>
+      <key>id</key>
+      <value>udp_host</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>label</key>
+      <value>dest-host</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>localhost</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>string</value>
+    </param>
+    <param>
+      <key>short_id</key>
+      <value>d</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(593, 122)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>parameter</key>
+    <param>
+      <key>id</key>
+      <value>udp_port</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>label</key>
+      <value>dest port</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>5003</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>intx</value>
+    </param>
+    <param>
+      <key>short_id</key>
+      <value>p</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(709, 125)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -177,11 +321,11 @@
     </param>
     <param>
       <key>ipaddr</key>
-      <value>127.0.0.1</value>
+      <value>udp_host</value>
     </param>
     <param>
       <key>port</key>
-      <value>5003</value>
+      <value>udp_port</value>
     </param>
     <param>
       <key>psize</key>
@@ -201,62 +345,13 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(746, 47)</value>
+      <value>(593, 12)</value>
     </param>
     <param>
       <key>_rotation</key>
       <value>0</value>
     </param>
   </block>
-  <block>
-    <key>blocks_file_source</key>
-    <param>
-      <key>id</key>
-      <value>blocks_file_source_0</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>file</key>
-      <value></value>
-    </param>
-    <param>
-      <key>type</key>
-      <value>short</value>
-    </param>
-    <param>
-      <key>repeat</key>
-      <value>False</value>
-    </param>
-    <param>
-      <key>vlen</key>
-      <value>1</value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(188, 68)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <connection>
-    <source_block_id>blocks_stream_to_vector_0</source_block_id>
-    <sink_block_id>blocks_udp_sink_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
   <connection>
     <source_block_id>blocks_file_source_0</source_block_id>
     <sink_block_id>blocks_throttle_0</sink_block_id>
@@ -265,7 +360,7 @@
   </connection>
   <connection>
     <source_block_id>blocks_throttle_0</source_block_id>
-    <sink_block_id>blocks_stream_to_vector_0</sink_block_id>
+    <sink_block_id>blocks_udp_sink_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
