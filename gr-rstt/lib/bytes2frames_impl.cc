@@ -37,12 +37,16 @@ namespace gr {
       { 7, 0x10 },
       { 42, 0x69 },
       { 43, 0x0C },
-      { 70, 0x3D },
-      { 71, 0x94 },
+      { 70, 0x67 },
+      { 71, 0x3D },
       { 196, 0x68 },
       { 197, 0x05 },
       { 210, 0xff },
       { 211, 0x02 },
+      { 212, 0x02 },
+      { 213, 0x00 },
+      { 214, 0x02 },
+      { 215, 0x00 },
     };
 
     const int bytes2frames_impl::NSYNC_BYTES = sizeof(bytes2frames_impl::SYNC_BYTES) /
