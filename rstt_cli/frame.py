@@ -53,10 +53,10 @@ class Frame:
             self._d_ch8 = struct.unpack('I',  self._data[65:68] + b'\x00')[0]
 
         if self._crc3_ok:
-            self._d_gps_t = struct.unpack("<f", self._data[72:76])
+            self._d_gps_t = struct.unpack("<I", self._data[72:76])
             self._d_78 = self._data[76:86] # TODO
             gps_status = struct.unpack("12B", self._data[86:98])
-            gps = struct.unpack("<24f", self._data[98:194])
+            gps = struct.unpack("<24f", self._data[98:194]) # FIXME, wrong
             self._d_gps = []
             for idx in range(0, 12):
                 self._d_gps.append(GPSInfo(gps[2*idx], gps[2*idx+1], gps_status[idx]))
