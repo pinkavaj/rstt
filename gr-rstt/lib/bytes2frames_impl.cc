@@ -59,7 +59,7 @@ namespace gr {
       : gr::block("bytes2frames",
               gr::io_signature::make(1, 1, sizeof(in_t)),
               gr::io_signature::make(1, 1, sizeof(out_t)*240)),
-        threshold(round(16*threshold)),
+        threshold(lrintf(threshold*NSYNC_BYTES)),
         more(false)
     {}
 
@@ -72,7 +72,7 @@ namespace gr {
     {
         int corr = 0;
         for (int n = 0; n < NSYNC_BYTES; ++n) {
-            corr += (in[SYNC_BYTES[n].idx] & 0xff == SYNC_BYTES[n].value);
+            corr += ((in[SYNC_BYTES[n].idx] & 0xff) == SYNC_BYTES[n].value);
         }
         return corr;
     }
@@ -89,7 +89,7 @@ namespace gr {
                 corr_idx = idx;
             }
         }
-        return corr_max > 0 ? corr_idx : PACKET_SIZE;
+        return (corr_max > 0 && corr_idx > 0) ? corr_idx : PACKET_SIZE;
     }
 
     void
@@ -153,12 +153,11 @@ namespace gr {
 
                 continue;
             }
-            if (consumed < in_len - 240 - 239) {
+            if (consumed > in_len - 2*PACKET_SIZE + 1) {
                 more = true;
                 break;
             }
             int sync_idx = find_sync(in + consumed);
-            sync_idx = sync_idx > 0 ? sync_idx : PACKET_SIZE;
 
             produced += send_packet(in + consumed, out + produced*PACKET_SIZE, sync_idx);
             consumed += sync_idx;
