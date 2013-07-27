@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 from gnuradio import gr, gr_unittest, blocks
-from bytes2frames import bytes2frames
+from rstt_swig import bytes2frames
 
-class test_rstt_bytes2frames(gr_unittest.TestCase):
+class qa_bytes2frames(gr_unittest.TestCase):
 
     def setUp(self):
         self.tb = gr.top_block ()
@@ -20,7 +20,7 @@ class test_rstt_bytes2frames(gr_unittest.TestCase):
         result_data = tuple([int(x) for x in dst.data()])
         self.assertEqual(data_exp, result_data)
 
-    def test_rstt_bytes2frames_00(self):
+    def test_00(self):
         data_src =(0x2A, )*5 + (0x10, 0x65, 0x10) + (0, )*34 + \
                 (0x69, 0x0C, ) + (0, )*26 + \
                 (0x3D, 0x94, ) + (0, )*124 + \
@@ -31,7 +31,7 @@ class test_rstt_bytes2frames(gr_unittest.TestCase):
         test_block = bytes2frames()
         self.do(data_src, data_exp, test_block)
 
-    def test_rstt_bytes2frames_01(self):
+    def test_01(self):
         data_src = (0x2A, )*5 + (0x10, 0x65, 0x10) + (0, )*34 + \
                 (0x69, 0x0C, ) + (0, )*26 + \
                 (0x3D, 0x94, ) + (0, )*124 + \
@@ -51,5 +51,5 @@ class test_rstt_bytes2frames(gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(test_rstt_bytes2frames, "test_rstt_bytes2frames.xml")
+    gr_unittest.run(qa_bytes2frames, "qa_bytes2frames.xml")
 

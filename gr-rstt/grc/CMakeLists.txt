@@ -19,5 +19,6 @@
 
 install(FILES
     rstt_symbols2bits.xml
-    rstt_bits2bytes.xml DESTINATION share/gnuradio/grc/blocks
+    rstt_bits2bytes.xml
+    rstt_bytes2frames.xml DESTINATION share/gnuradio/grc/blocks
 )

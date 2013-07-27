@@ -10,6 +10,7 @@
 %{
 #include "rstt/symbols2bits.h"
 #include "rstt/bits2bytes.h"
+#include "rstt/bytes2frames.h"
 %}
 
 
@@ -17,3 +18,5 @@
 GR_SWIG_BLOCK_MAGIC2(rstt, symbols2bits);
 %include "rstt/bits2bytes.h"
 GR_SWIG_BLOCK_MAGIC2(rstt, bits2bytes);
+%include "rstt/bytes2frames.h"
+GR_SWIG_BLOCK_MAGIC2(rstt, bytes2frames);
