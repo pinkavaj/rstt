@@ -21,8 +21,6 @@
 #include "bytes2frames_impl.h"
 #include "byte_status.h"
 
-#include <stdio.h>
-
 namespace gr {
   namespace rstt {
 
