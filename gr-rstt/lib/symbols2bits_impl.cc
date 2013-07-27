@@ -162,6 +162,10 @@ namespace gr {
         while (consume > 2 && produced < out_len) {
           if (is_out_of_sync()) {
             roll_out_nbits += sync_win_len/2 - std::max(sync_win_nerrs[0], sync_win_nerrs[1]);
+            if (!roll_out_nbits) {
+                sync_win_offs = 1 - sync_win_offs;
+                continue;
+            }
             consume_ = consume;
             const int p = roll_out(out_len - produced, consume, in, out);
             if (p < 0) {
