@@ -1,8 +1,8 @@
 #!/bin/sh/python3
 
 import socket
-from rstt.frame import Frame
-from rstt.calibration import Calibration
+from frame import Frame
+from calibration import Calibration
 from sys import argv
 
 class UdpClient:

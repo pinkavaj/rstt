@@ -1,6 +1,12 @@
 Currently installation is tested only for Linux,
 but should work for anny platform supported by GNURadio.
 
+RSTT Consists of 2 independent parts:
+ * gr-rstt: GNU Radio modules and tools
+ * rstt_cli: Utilities for data processing, vissualisation etc.
+
+== Installing gr-rstt ==
+
 Requirements:
  * Gnuradio
  * gr-osmosdr
@@ -12,28 +18,29 @@ Install:
   (form: ~/.grc_gnuradio /usr/local ... )
   if You does not do so, you will probably fall into mysterious troubles.
 
- * First install C++ modules from gr-rstt
-  * cd gr-rstt
-  * mkdir build
-  * cd build
-  * cmake ../
-  * make -j
-  * make install
- * Then install Python stuf (a bit hackyk way) all files are installed
-   into ~/.grc_gnuradio directory
-  * cd ../..
-  * make localinstall
+ * cd gr-rstt
+ * mkdir build
+ * cd build
+ * cmake ../
+ * make -j
+ * sudo make install
 
-I You installed RSTT into /usr/local (default location) there is feq
+I You installed RSTT into /usr/local (default location) there is few
 aditional steps You might want to do:
 
  * Set GNU Radio local module path in ~/.gnuradio/config.conf
    [grc]
    local_blocks_path=/usr/local/share/gnuradio/grc/blocks/
+
  * Set PYTHONPATH in your ~/.bash_profile:
-  * export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python2.7/site-packages/
- * set LD path to /usr/local/lib in /etc/ld.so.conf.d/local.conf
+   export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python2.7/site-packages/
+
+ * add LD path /usr/local/lib in /etc/ld.so.conf.d/local_lib.conf
    /usr/local/lib
- * update LD path
+
+ * update LD path configuration
    ldconfig
 
+== Install rstt_cli ==
+  TODO
+  For now no installation is supported, run from local directory.
