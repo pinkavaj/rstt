@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
-import socket
+import source
+
 from frame import Frame
 from calibration import Calibration
 from sys import argv
@@ -8,20 +9,20 @@ from sys import argv
 class UdpClient:
     """UDP client for reversing data from meteosonde."""
 
-    def __init__(self, addr='127.0.0.1', port=5003, data_log=None, calib_log=None):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind((addr, port))
+    def __init__(self, src_url, log_prefix=None):
+        self._src = source.open(src_url)
         self._calib_log = None
-        self._data_log = None
-        if data_log:
-            self._data_log = open(data_log, 'w')
-        if calib_log:
-            self._calib_log = open(calib_log, 'w')
+        self._meas_log = None
+        if log_prefix is not None:
+            self._meas_log = open(log_prefix + '.meas.csv', 'w')
+            self._calib_log = open(log_prefix + '.calib.txt', 'w')
+# may contain anything
+            self._test_log = open(log_prefix + '.test.csv', 'w')
 
     def loop(self):
         calibration = Calibration()
         while True:
-            data, server = self.sock.recvfrom(1024)
+            data = self._src.get_frame()
             frame = Frame(data)
             print("frame: %s" % repr(frame.get_frame_num()))
             self._dump_frame(frame)
@@ -35,7 +36,7 @@ class UdpClient:
         self._dump_calibration(calibration)
 
         while True:
-            data,  server = self.sock.recvfrom(1024)
+            data = self._src.get_frame()
             frame = Frame(data)
             print("frame: %s" % repr(frame.get_frame_num()))
             self._dump_frame(frame)
@@ -44,16 +45,18 @@ class UdpClient:
         pass
 
     def _dump_frame(self, frame):
-        if not self._data_log:
-            return
+        if self._meas_log:
+            self._dump_frame_channels(frame)
+        if self._test_log:
+            self._dump_frame_test(frame)
         #self._dump_frame_gps(frame)
-        self._dump_frame_channels(frame)
 
     def _dump_frame_channels(self, frame):
         if not frame._crc2_ok:
             s = "\n"
         else:
-            s = "%d;%d;%d;%d;%d;%d;%d;%d\n" % (
+            s = "%s;%d;%d;%d;%d;%d;%d;%d;%d\n" % (
+                    str(frame.get_frame_num()),
                     frame._d_temp,
                     frame._d_hum_up,
                     frame._d_hum_down,
@@ -63,11 +66,11 @@ class UdpClient:
                     frame._d_ch7,
                     frame._d_ch8)
             s = s.replace('.', ',')
-        self._data_log.write(s)
+        self._meas_log.write(s)
 
     def _dump_frame_gps(self, frame):
         if not frame._crc3_ok:
-            self._data_log.write("\n")
+            self._gps_log.write("\n")
             return
         s = ""
         for i in range(0, 10):
@@ -76,12 +79,31 @@ class UdpClient:
           gps = frame._d_gps[i]
           s += "%.6e;%.6e;%x;%o;%d;" % (gps.pseudorange, gps.doppler, gps.status, gps.status, gps.status)
 
-        self._data_log.write(s.replace('.', ',') + "\n")
+        self._gps_log.write(s.replace('.', ',') + "\n")
+
+    def _dump_frame_test(self, frame):
+        s = ""
+        if frame._crc1_ok:
+            s = "%d;%s;%s;%s;" % (frame.get_frame_num(),
+                bin(frame._d_15), bin(frame._d_16), bin(frame._d_17) )
+        else:
+            s = ";;;;"
+
+        if frame._crc2_ok:
+            s += "%d;%d;" % (
+                    frame._d_hum_up,
+                    frame._d_hum_down,
+                    )
+            s = s.replace('.', ',')
+        else:
+          s += ";;"
+        self._test_log.write(s + "\n")
 
 
 if __name__ == '__main__':
-    data_log = None if len(argv) < 2 else argv[1]
-    calib_log = None if len(argv) < 3 else argv[2]
-    client = UdpClient(data_log=data_log, calib_log=calib_log)
+    if len(argv) < 2:
+        raise ValueError("Missing parameter: source URL")
+    log_prefix = None if len(argv) < 3 else argv[2]
+    client = UdpClient(argv[1], log_prefix=log_prefix)
     client.loop()
 
