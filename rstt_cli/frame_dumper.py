@@ -43,6 +43,7 @@ class UdpClient:
         "Recieve until calibration data are completed"
 
         print("calibration complete")
+        calibration.parse()
         self._dump_calibration(calibration)
 
         while True:
@@ -54,7 +55,13 @@ class UdpClient:
     def _dump_calibration(self, calibration):
         if self._calib_bin:
             self._calib_bin.write(calibration.data)
-        pass
+        if not self._calib_log:
+            return
+        #self._calib_log.write('0x08: %7d\t' % calibration._d_8)
+        #self._calib_log.write('0x0A: %7d\n' % calibration._d_10)
+        for i in range(0x20, 0x40, 2):
+            self._calib_log.write('%7d\t' % unpack('h', calibration.data[i:i+2]))
+        self._calib_log.write('\n')
 
     def _dump_frame(self, frame):
         if self._meas_log:
