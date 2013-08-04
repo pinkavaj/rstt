@@ -2,8 +2,9 @@
 
 import source
 
-from frame import Frame
 from calibration import Calibration
+from frame import Frame
+from struct import unpack
 from sys import argv
 
 class UdpClient:
@@ -14,10 +15,18 @@ class UdpClient:
         self._calib_log = None
         self._meas_log = None
         if log_prefix is not None:
+            self._gps_log = open(log_prefix + '.gps.csv', 'w')
             self._meas_log = open(log_prefix + '.meas.csv', 'w')
             self._calib_log = open(log_prefix + '.calib.txt', 'w')
 # may contain anything
             self._test_log = open(log_prefix + '.test.csv', 'w')
+
+            self._gps_log.write('T;GPS_BLOB_0;' + 'ID;P range;doppler;?(x);?(status);?(status);' * 12 + '\n')
+
+    def _bin(self, num):
+      #if num is 0:
+      #      return bin(num)
+        return '0b' + bin(num)[2:].zfill(8)
 
     def loop(self):
         calibration = Calibration()
@@ -49,7 +58,8 @@ class UdpClient:
             self._dump_frame_channels(frame)
         if self._test_log:
             self._dump_frame_test(frame)
-        #self._dump_frame_gps(frame)
+        if self._gps_log:
+          self._dump_frame_gps(frame)
 
     def _dump_frame_channels(self, frame):
         if not frame._crc2_ok:
@@ -73,30 +83,24 @@ class UdpClient:
             self._gps_log.write("\n")
             return
         s = ""
-        for i in range(0, 10):
-            s += "%d;" % frame._d_78[i]
+
+        s += "%11.3f;" % (frame._d_gps_t / 1000.)
+        s += "%s;" % self._bin(unpack('<H', frame._d_76)[0])
         for i in range(0, 12):
           gps = frame._d_gps[i]
-          s += "%.6e;%.6e;%x;%o;%d;" % (gps.pseudorange, gps.doppler, gps.status, gps.status, gps.status)
+          s += "%d;%d;%d;%d;" % \
+                  (gps.id, gps.pseudorange, gps.doppler, gps.x)
+          s += "%d;%s;" % (frame._d_gps_status[i], self._bin(frame._d_gps_status[i]), )
 
         self._gps_log.write(s.replace('.', ',') + "\n")
 
     def _dump_frame_test(self, frame):
         s = ""
-        if frame._crc1_ok:
-            s = "%d;%s;%s;%s;" % (frame.get_frame_num(),
-                bin(frame._d_15), bin(frame._d_16), bin(frame._d_17) )
-        else:
-            s = ";;;;"
+        if not frame._crc1_ok:
+            return
+        s = "%6d;" % (frame.get_frame_num(), )
 
-        if frame._crc2_ok:
-            s += "%d;%d;" % (
-                    frame._d_hum_up,
-                    frame._d_hum_down,
-                    )
-            s = s.replace('.', ',')
-        else:
-          s += ";;"
+        s = s.replace('.', ',')
         self._test_log.write(s + "\n")
 
 
