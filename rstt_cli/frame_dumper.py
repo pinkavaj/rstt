@@ -18,6 +18,7 @@ class UdpClient:
             self._gps_log = open(log_prefix + '.gps.csv', 'w')
             self._meas_log = open(log_prefix + '.meas.csv', 'w')
             self._calib_log = open(log_prefix + '.calib.txt', 'w')
+            self._calib_bin = open(log_prefix + '.calib.bin', 'wb')
 # may contain anything
             self._test_log = open(log_prefix + '.test.csv', 'w')
 
@@ -51,6 +52,8 @@ class UdpClient:
             self._dump_frame(frame)
 
     def _dump_calibration(self, calibration):
+        if self._calib_bin:
+            self._calib_bin.write(calibration.data)
         pass
 
     def _dump_frame(self, frame):
