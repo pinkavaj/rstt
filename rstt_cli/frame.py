@@ -66,9 +66,9 @@ class Frame:
             gps_sat_num = []
             while sat_num:
                 lo, hi, sat_num = sat_num[0], sat_num[1], sat_num[2:]
-                a = (lo & 0x1F) + 1
-                b = ((lo >> 5) | ((hi & 0x3) << 3)) + 1
-                c = (hi >> 2) + 1
+                a = (lo & 0x1F)
+                b = ((lo >> 5) | ((hi & 0x3) << 3))
+                c = (hi >> 2)
                 gps_sat_num.extend((a, b, c, ))
             self._d_gps_status = struct.unpack("12B", self._data[86:98])
 
