@@ -98,7 +98,7 @@ class UdpClient:
         s += "%s;" % self._bin(unpack('<H', frame._d_76)[0])
         for i in range(0, 12):
           gps = frame._d_gps[i]
-          s += "%d;%d;%d;%d;" % \
+          s += "%s;%s;%s;%s;" % \
                   (gps.id, gps.pseudorange, gps.doppler, gps.x)
           s += "%d;%s;" % (frame._d_gps_status[i], self._bin(frame._d_gps_status[i]), )
 

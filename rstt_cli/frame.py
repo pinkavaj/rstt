@@ -35,7 +35,7 @@ class Frame:
             data = data + b'\x00'
         val = struct.unpack('<i', data)[0]
         if val > self._int_max or val < self._int_min:
-            return float('NAN')
+            return None
         return val
 
     def _parse(self):
