@@ -12,6 +12,9 @@ class GPSInfo:
     self.x = x
 
 class Frame:
+    _int_min = -0x1400000
+    _int_max = (0x1400000-1)
+
     def __init__(self, frame_data):
         self._data = frame_data
         self._crc = crcmod.mkCrcFun(0x11021, rev=False)
@@ -26,9 +29,14 @@ class Frame:
         if self._crc1_ok:
             return self._d_frame_num
 
-    def _int24(self, data):
-        """Convert 3 bytes into int."""
-        return struct.unpack('<i', data + b'\x00')[0]
+    def _int(self, data):
+        """Convert 3/4 bytes in fract24 format into int."""
+        if len(data) == 3:
+            data = data + b'\x00'
+        val = struct.unpack('<i', data)[0]
+        if val > self._int_max or val < self._int_min:
+            return float('NAN')
+        return val
 
     def _parse(self):
         self._data,  self._status = self._data[::2],  self._data[1::2]
@@ -50,14 +58,14 @@ class Frame:
         if self._crc2_ok:
             self._d_37 = int(self._data[42])
             self._d_38 = int(self._data[43])
-            self._d_temp = self._int24(self._data[44:47])
-            self._d_hum_up = self._int24(self._data[47:50])
-            self._d_hum_down = self._int24(self._data[50:53])
-            self._d_ch4 = self._int24(self._data[53:56])
-            self._d_ch5 = self._int24(self._data[56:59])
-            self._d_pressure = self._int24(self._data[59:62])
-            self._d_ch7 = self._int24(self._data[62:65])
-            self._d_ch8 = self._int24(self._data[65:68])
+            self._d_temp = self._int(self._data[44:47])
+            self._d_hum_up = self._int(self._data[47:50])
+            self._d_hum_down = self._int(self._data[50:53])
+            self._d_ch4 = self._int(self._data[53:56])
+            self._d_ch5 = self._int(self._data[56:59])
+            self._d_pressure = self._int(self._data[59:62])
+            self._d_ch7 = self._int(self._data[62:65])
+            self._d_ch8 = self._int(self._data[65:68])
 
         if self._crc3_ok:
             self._d_gps_t = struct.unpack("<I", self._data[72:76])[0]
@@ -78,8 +86,8 @@ class Frame:
                 d = gps_pos[i*8:(i+1)*8]
                 self._d_gps.append(
                         GPSInfo(gps_sat_num[i],
-                            struct.unpack('<i', d[:4])[0],
-                            self._int24(d[4:7]),
+                            self._int(d[:4]),
+                            self._int(d[4:7]),
                             struct.unpack('b', d[7:8])[0]))
 
         if self._crc4_ok:
