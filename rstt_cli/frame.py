@@ -36,8 +36,6 @@ class Frame:
         self.meas = None
         if self._check_crc(subframe2):
             self.meas = SubframeMeas(subframe2)
-        else:
-            print("xxx")
 
         self.gps = None
         if self._check_crc(subframe3):

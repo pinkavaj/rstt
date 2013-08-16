@@ -50,6 +50,8 @@ class UdpClient:
 
         while True:
             data = self._src.get_frame()
+            if not data:
+                break
             frame = Frame(data)
             print("frame: %s" % repr(frame.get_frame_num()))
             self._dump_frame(frame)
