@@ -35,8 +35,7 @@ class UdpClient:
     def loop(self):
         calibration = Calibration()
         while True:
-            data = self._src.get_frame()
-            frame = Frame(data)
+            frame = Frame(self._src.get_frame())
             print("frame: %s" % repr(frame.get_frame_num()))
             self._dump_frame(frame)
             c = frame.get_calibration()
@@ -68,38 +67,41 @@ class UdpClient:
 
     def _dump_frame(self, frame):
         if self._meas_log:
-            self._dump_frame_channels(frame)
+            self._dump_meas(frame)
         if self._test_log:
             self._dump_frame_test(frame)
         if self._gps_log:
-          self._dump_frame_gps(frame)
+          self._dump_gps(frame)
 
-    def _dump_frame_channels(self, frame):
-        if not frame._crc2_ok:
+    def _dump_meas(self, frame):
+        if frame.meas is None:
             s = "\n"
         else:
+            meas = frame.meas
             s = "%s;%d;%d;%d;%d;%d;%d;%d;%d\n" % (
-                    str(frame.get_frame_num()),
-                    frame._d_temp,
-                    frame._d_hum_up,
-                    frame._d_hum_down,
-                    frame._d_ch4,
-                    frame._d_ch5,
-                    frame._d_pressure,
-                    frame._d_ch7,
-                    frame._d_ch8)
+                    str(
+                        frame.get_frame_num()),
+                        meas._d_temp,
+                        meas._d_hum_up,
+                        meas._d_hum_down,
+                        meas._d_ch4,
+                        meas._d_ch5,
+                        meas._d_pressure,
+                        meas._d_ch7,
+                        meas._d_ch8)
             s = s.replace('.', ',')
         self._meas_log.write(s)
 
-    def _dump_frame_gps(self, frame):
-        if not frame._crc3_ok:
+    def _dump_gps(self, frame):
+        if frame.gps is None:
             self._gps_log.write("\n")
             return
         s = ""
 
-        s += "%11.3f;" % frame._d_gps.time
-        s += "%s;" % self._bin(unpack('<H', frame._d_gps.d76)[0])
-        for sat in frame._d_gps.sats:
+        gps = frame.gps
+        s += "%11.3f;" % gps.time
+        s += "%s;" % self._bin(unpack('<H', gps.d76)[0])
+        for sat in gps.satelites:
             stat = 1 if sat.doppler_lock else 0
             stat |= 2 if sat.prange_lock else 0
             stat |= 4 if sat.prange_ok else 0
@@ -111,7 +113,7 @@ class UdpClient:
 
     def _dump_frame_test(self, frame):
         s = ""
-        if not frame._crc1_ok:
+        if frame.config is None:
             return
         s = "%6d;" % (frame.get_frame_num(), )
 
