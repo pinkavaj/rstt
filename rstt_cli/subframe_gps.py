@@ -13,7 +13,8 @@ class SubframeGPS:
             self.prange_lock = bool(status & 0x02)
             self.doppler_lock = bool(status & 0x01)
 
-            self.prange = conv_fract(meas[:4])
+            self.prange = conv_fract(meas[:4]) / 1000. * 300
+            """Apriximete conversion from chips to meters."""
             self.doppler = conv_fract(meas[4:7])
             self.x = unpack('b', meas[7:8])[0]
 

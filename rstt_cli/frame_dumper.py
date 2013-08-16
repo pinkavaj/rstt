@@ -107,7 +107,7 @@ class UdpClient:
             stat |= 4 if sat.prange_ok else 0
             stat |= 8 if sat.time_ok else 0
             s += "%s;%d;%d;" % (self._bin4(stat), sat.prn, sat.sig_strength, )
-            s += "%s;%s;%s;" % (sat.prange, sat.doppler, sat.x)
+            s += "%.1f;%s;%s;" % (sat.prange, sat.doppler, sat.x)
 
         self._gps_log.write(s.replace('.', ',') + "\n")
 
