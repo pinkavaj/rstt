@@ -22,12 +22,15 @@ class UdpClient:
 # may contain anything
             self._test_log = open(log_prefix + '.test.csv', 'w')
 
-            self._gps_log.write('T;GPS_BLOB_0;' + 'ID;P range;doppler;?(x);?(status);?(status);' * 12 + '\n')
+            self._gps_log.write('T;GPS_BLOB_0;' + 'status;PRN;SNR;P range;doppler;?(x);' * 12 + '\n')
 
     def _bin(self, num):
       #if num is 0:
       #      return bin(num)
         return '0b' + bin(num)[2:].zfill(8)
+
+    def _bin4(self, num):
+        return '0b' + bin(num)[2:].zfill(4)
 
     def loop(self):
         calibration = Calibration()
@@ -94,13 +97,15 @@ class UdpClient:
             return
         s = ""
 
-        s += "%11.3f;" % (frame._d_gps_t / 1000.)
-        s += "%s;" % self._bin(unpack('<H', frame._d_76)[0])
-        for i in range(0, 12):
-          gps = frame._d_gps[i]
-          s += "%s;%s;%s;%s;" % \
-                  (gps.id, gps.pseudorange, gps.doppler, gps.x)
-          s += "%d;%s;" % (frame._d_gps_status[i], self._bin(frame._d_gps_status[i]), )
+        s += "%11.3f;" % frame._d_gps.time
+        s += "%s;" % self._bin(unpack('<H', frame._d_gps.d76)[0])
+        for sat in frame._d_gps.sats:
+            stat = 1 if sat.doppler_lock else 0
+            stat |= 2 if sat.prange_lock else 0
+            stat |= 4 if sat.prange_ok else 0
+            stat |= 8 if sat.time_ok else 0
+            s += "%s;%d;%d;" % (self._bin4(stat), sat.prn, sat.sig_strength, )
+            s += "%s;%s;%s;" % (sat.prange, sat.doppler, sat.x)
 
         self._gps_log.write(s.replace('.', ',') + "\n")
 
