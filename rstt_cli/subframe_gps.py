@@ -18,6 +18,9 @@ class SubframeGPS:
             self.doppler = conv_fract(meas[4:7])
             self.x = unpack('b', meas[7:8])[0]
 
+        def stat_ok(self):
+            return self.time_ok and self.prange_ok and self.prange_lock and \
+                    self.doppler_lock and self.prn
 
     def __init__(self, data):
         time, d76, prn_data, status, meas = \
