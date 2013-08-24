@@ -22,6 +22,12 @@ class Frame:
         if self.config is not None:
             return self.config.frame_num
 
+    def is_ok(self):
+        return self.config is not None and \
+                self.meas is not None and \
+                self.gps is not None and \
+                self.subframe4 is not None
+
     def _parse(self, data):
         data,  self._status = data[::2],  data[1::2]
         self._data = data

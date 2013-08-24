@@ -41,7 +41,7 @@ class UdpClient:
             if not data:
                 return
             frame = Frame(data)
-            print("frame: %s" % repr(frame.get_frame_num()))
+            print("frame: %s %s" % (frame.get_frame_num(), frame.is_ok(), ))
             self._dump_frame(frame)
             c = frame.get_calibration()
             if not c is None:
