@@ -23,9 +23,9 @@ class qa_bytes2frames(gr_unittest.TestCase):
     def test_00(self):
         data_src =(0x2A, )*5 + (0x10, 0x65, 0x10) + (0, )*34 + \
                 (0x69, 0x0C, ) + (0, )*26 + \
-                (0x3D, 0x94, ) + (0, )*124 + \
+                (0x67, 0x3D, ) + (0, )*124 + \
                 (0x68, 0x05, ) + (0, )*12 + \
-                (0xff, 0x02, ) + (0, )*28
+                (0xff, 0x02, 0x02, 0x00, 0x02, ) + (0, )*25
         data_exp = data_src
         #data_src = data_src + data_src
         test_block = bytes2frames()
@@ -34,15 +34,15 @@ class qa_bytes2frames(gr_unittest.TestCase):
     def test_01(self):
         data_src = (0x2A, )*5 + (0x10, 0x65, 0x10) + (0, )*34 + \
                 (0x69, 0x0C, ) + (0, )*26 + \
-                (0x3D, 0x94, ) + (0, )*124 + \
+                (0x67, 0x3D, ) + (0, )*124 + \
                 (0x68, 0x05, ) + (0, )*12 + \
-                (0xff, 0x02, ) + (0, )*28
+                (0xff, 0x02, 0x02, 0x00, 0x02, ) + (0, )*25
         data_exp = \
                 (0xF00,)*8 + (0x700, )*34 + \
                 (0xF00, 0xF00, ) + (0x700, )*26 + \
                 (0xF00, 0xF00, ) + (0x700, )*124 + \
                 (0xF00, 0xF00, ) + (0x700, )*12 + \
-                (0xF00, 0xF00, ) + (0x700, )*18 + (0x01, )*10 + \
+                (0xF00, 0xF00, 0xF00, 0x700, 0xF00, ) + (0x700, )*15 + (0x01, )*10 + \
                 data_src
         data_src = (0x01,)* 10 + data_src
         #data_src = data_src + data_src
