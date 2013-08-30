@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<block>
+  <name>ErrorCorrection</name>
+  <key>rstt_error_correction</key>
+  <category>RSTT</category>
+  <import>import rstt</import>
+  <make>rstt.error_correction($guess)</make>
+  <param>
+    <name>Correction guessing (experimental)</name>
+    <key>guess</key>
+    <value>False</value>
+    <type>bool</type>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>short</type>
+    <vlen>240</vlen>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>short</type>
+    <vlen>240</vlen>
+  </source>
+  <doc>
+    Try correct errors in packet using Reed-Solomon codes.
+
+    If correction guessing is enabled, it can potentionaly correct more errors, but does
+    some assumptions about content base on ussual packet structure or content of
+    previous packets. Usually is safe to set this to True.
+  </doc>
+</block>

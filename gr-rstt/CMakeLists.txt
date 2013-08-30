@@ -91,7 +91,7 @@ find_package(CppUnit)
 # of GR_REQUIRED_COMPONENTS (in all caps) and change "version" to the
 # minimum API compatible version required.
 #
-set(GR_REQUIRED_COMPONENTS RUNTIME)
+set(GR_REQUIRED_COMPONENTS RUNTIME FEC)
 find_package(Gnuradio)
 
 if(NOT GNURADIO_RUNTIME_FOUND)

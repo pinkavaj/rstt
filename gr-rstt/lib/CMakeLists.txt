@@ -29,10 +29,11 @@ list(APPEND rstt_sources
     symbols2bits_impl.cc
     bits2bytes_impl.cc
     bytes2frames_impl.cc
+    error_correction_impl.cc
 )
 
 add_library(gnuradio-rstt SHARED ${rstt_sources})
-target_link_libraries(gnuradio-rstt ${Boost_LIBRARIES} ${GNURADIO_RUNTIME_LIBRARIES})
+target_link_libraries(gnuradio-rstt ${Boost_LIBRARIES} ${GNURADIO_RUNTIME_LIBRARIES} ${GNURADIO_FEC_LIBRARIES})
 set_target_properties(gnuradio-rstt PROPERTIES DEFINE_SYMBOL "gnuradio_rstt_EXPORTS")
 
 ########################################################################
@@ -61,6 +62,7 @@ add_executable(test-rstt ${test_rstt_sources})
 target_link_libraries(
   test-rstt
   ${GNURADIO_RUNTIME_LIBRARIES}
+  ${GNURADIO_FEC_LIBRARIES}
   ${Boost_LIBRARIES}
   ${CPPUNIT_LIBRARIES}
   gnuradio-rstt

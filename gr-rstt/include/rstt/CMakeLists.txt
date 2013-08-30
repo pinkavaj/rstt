@@ -24,5 +24,6 @@ install(FILES
     api.h
     symbols2bits.h
     bits2bytes.h
-    bytes2frames.h DESTINATION include/rstt
+    bytes2frames.h
+    error_correction.h DESTINATION include/rstt
 )
