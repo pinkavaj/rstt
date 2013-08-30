@@ -155,7 +155,7 @@ namespace gr {
 
                 continue;
             }
-            if (consumed > in_len - 2*PACKET_SIZE + 1) {
+            if (consumed < in_len - 2*PACKET_SIZE + 1) {
                 more = true;
                 break;
             }
