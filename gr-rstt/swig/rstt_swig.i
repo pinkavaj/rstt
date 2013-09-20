@@ -12,6 +12,7 @@
 #include "rstt/bits2bytes.h"
 #include "rstt/bytes2frames.h"
 #include "rstt/error_correction.h"
+#include "rstt/decoder.h"
 %}
 
 
@@ -23,3 +24,5 @@ GR_SWIG_BLOCK_MAGIC2(rstt, bits2bytes);
 GR_SWIG_BLOCK_MAGIC2(rstt, bytes2frames);
 %include "rstt/error_correction.h"
 GR_SWIG_BLOCK_MAGIC2(rstt, error_correction);
+%include "rstt/decoder.h"
+GR_SWIG_BLOCK_MAGIC2(rstt, decoder);

@@ -30,6 +30,7 @@ list(APPEND rstt_sources
     bits2bytes_impl.cc
     bytes2frames_impl.cc
     error_correction_impl.cc
+    decoder_impl.cc
 )
 
 add_library(gnuradio-rstt SHARED ${rstt_sources})

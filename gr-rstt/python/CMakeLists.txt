@@ -45,3 +45,4 @@ GR_ADD_TEST(qa_symbols2bits ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_
 GR_ADD_TEST(qa_bits2bytes ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_bits2bytes.py)
 GR_ADD_TEST(qa_bytes2frames ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_bytes2frames.py)
 GR_ADD_TEST(qa_error_correction ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_error_correction.py)
+GR_ADD_TEST(qa_decoder ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_decoder.py)

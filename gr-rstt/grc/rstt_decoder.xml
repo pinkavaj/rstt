@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<block>
+  <name>Decoder</name>
+  <key>rstt_decoder</key>
+  <category>rstt</category>
+  <import>import rstt</import>
+  <make>rstt.decoder($sync_nbits, $sync_nbytes, $drop_invalid)</make>
+  <param>
+    <name>Symbols2bites synchronization window size (bits)</name>
+    <key>sync_nbits</key>
+    <value>20*10</value>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Bites2bytes synchronization window size (bytes)</name>
+    <key>sync_nbytes</key>
+    <value>32</value>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Drop frames with no valid data (check CRC).</name>
+    <key>drop_invalid</key>
+    <value>True</value>
+    <type>bool</type>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>byte</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>short</type>
+    <vlen>240</vlen>
+  </source>
+</block>
