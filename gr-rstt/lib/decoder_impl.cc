@@ -35,16 +35,22 @@ namespace gr {
               gr::io_signature::make(1, 1, sizeof(in_t)),
               gr::io_signature::make(1, 1, sizeof(out_t)*240))
     {
-        ferror_correction = error_correction::make();
         fbits2bytes = bits2bytes::make(sync_nbytes);
         fbytes2frames = bytes2frames::make();
+        ferror_correction = error_correction::make();
         fsymbols2bits = symbols2bits::make(sync_nbits);
 
         connect(self(), 0, fsymbols2bits, 0);
         connect(fsymbols2bits, 0, fbits2bytes, 0);
         connect(fbits2bytes, 0, fbytes2frames, 0);
         connect(fbytes2frames, 0, ferror_correction, 0);
-        connect(ferror_correction, 0, self(), 0);
+        if (drop_invalid) {
+            finvalid_frame_filter = invalid_frame_filter::make();
+            connect(ferror_correction, 0, finvalid_frame_filter, 0);
+            connect(finvalid_frame_filter, 0, self(), 0);
+        } else {
+            connect(ferror_correction, 0, self(), 0);
+        }
     }
 
     decoder_impl::~decoder_impl()

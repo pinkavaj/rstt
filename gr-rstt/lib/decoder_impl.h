@@ -21,6 +21,7 @@
 #include <rstt/bits2bytes.h>
 #include <rstt/bytes2frames.h>
 #include <rstt/error_correction.h>
+#include <rstt/invalid_frame_filter.h>
 #include <rstt/symbols2bits.h>
 
 namespace gr {
@@ -35,6 +36,7 @@ namespace gr {
        bits2bytes::sptr fbits2bytes;
        bytes2frames::sptr fbytes2frames;
        error_correction::sptr ferror_correction;
+       invalid_frame_filter::sptr finvalid_frame_filter;
        symbols2bits::sptr fsymbols2bits;
 
      public:
