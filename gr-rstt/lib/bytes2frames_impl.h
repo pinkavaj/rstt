@@ -27,28 +27,17 @@ namespace gr {
       typedef short in_t;
       typedef short out_t;
 
-      /** Index and value of synchronization byte in frame. */
-      typedef struct {
-        short idx;
-        out_t value;
-      } sync_byte_t;
-
-      const static sync_byte_t SYNC_BYTES[];
-      const static int NSYNC_BYTES;
       const static int PACKET_SIZE = 240;
-      /** Number of correct sync bytes to consider frame as valid,
-        invalid frames are dropped. */
-      int threshold;
       /** Need more data to find a frame. */
       bool more;
 
       int correlate(const in_t *in) const;
       int find_sync(const in_t *in) const;
-      int send_packet(const in_t *in, out_t *out, int packet_size = PACKET_SIZE);
+      void send_packet(const in_t *in, out_t *out, int packet_size = PACKET_SIZE);
       int work(int out_len, int in_len, int &consumed, const in_t *in, out_t *out);
 
      public:
-      bytes2frames_impl(float threshold);
+      bytes2frames_impl();
       ~bytes2frames_impl();
 
       // Where all the action really happens

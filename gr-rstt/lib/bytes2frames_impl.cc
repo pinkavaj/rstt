@@ -24,44 +24,17 @@
 namespace gr {
   namespace rstt {
 
-    const bytes2frames_impl::sync_byte_t bytes2frames_impl::SYNC_BYTES[]  = {
-      { 0, 0x2A },
-      { 1, 0x2A },
-      { 2, 0x2A },
-      { 3, 0x2A },
-      { 4, 0x2A },
-      { 5, 0x10 },
-      { 6, 0x65 },
-      { 7, 0x10 },
-      { 42, 0x69 },
-      { 43, 0x0C },
-      { 70, 0x67 },
-      { 71, 0x3D },
-      { 196, 0x68 },
-      { 197, 0x05 },
-      { 210, 0xff },
-      { 211, 0x02 },
-      { 212, 0x02 },
-      { 213, 0x00 },
-      { 214, 0x02 },
-      { 215, 0x00 },
-    };
-
-    const int bytes2frames_impl::NSYNC_BYTES = sizeof(bytes2frames_impl::SYNC_BYTES) /
-        sizeof(bytes2frames_impl::sync_byte_t);
-
     bytes2frames::sptr
-    bytes2frames::make(float threshold)
+    bytes2frames::make()
     {
         return gnuradio::get_initial_sptr
-            (new bytes2frames_impl(threshold));
+            (new bytes2frames_impl());
     }
 
-    bytes2frames_impl::bytes2frames_impl(float threshold)
+    bytes2frames_impl::bytes2frames_impl()
       : gr::block("bytes2frames",
               gr::io_signature::make(1, 1, sizeof(in_t)),
               gr::io_signature::make(1, 1, sizeof(out_t)*240)),
-        threshold(lrintf(threshold*NSYNC_BYTES)),
         more(false)
     {}
 
@@ -72,26 +45,47 @@ namespace gr {
     int
     bytes2frames_impl::correlate(const in_t *in) const
     {
-        int corr = 0;
-        for (int n = 0; n < NSYNC_BYTES; ++n) {
-            corr += ((in[SYNC_BYTES[n].idx] & 0xff) == SYNC_BYTES[n].value);
+        // ignore all bite errors except 'invalid byte'
+        const in_t _MASK = 0xff | STATUS_ERR_BYTE;
+
+        int nerr = 0;
+        for (unsigned char i = 0; i < 5; ++i) {
+            nerr += ((in[i] & _MASK) == '*') ? 0 : 1;
         }
-        return corr;
+        if ((in[5] & _MASK) == 0x10) {
+            if (nerr <= 3) {
+                return nerr;
+            }
+            return 6;
+        }
+
+        // first and last '*' is required, to guess frame start mark
+        // up to 3 error are tollerable (and 0x10 is missing)
+        if (nerr <= 2) {
+            if (in[0] & _MASK == '*' && in[4] & _MASK == '*') {
+                return nerr + 1;
+            }
+        }
+
+        return 6;
     }
 
     int
     bytes2frames_impl::find_sync(const in_t *in) const
     {
-        int corr_max = 0;
+        int nerr_min = INT_MAX;
         int corr_idx = 0;
         for (int idx = 0; idx < PACKET_SIZE; ++idx) {
-            const int corr = correlate(in + idx);
-            if (corr > corr_max) {
-                corr_max = corr;
+            const int nerr = correlate(in + idx);
+            if (nerr < nerr_min) {
+                nerr_min = nerr;
                 corr_idx = idx;
+                if (nerr == 0) {
+                    break;
+                }
             }
         }
-        return (corr_max > 0 && corr_idx > 0) ? corr_idx : PACKET_SIZE;
+        return (nerr_min < 6 && corr_idx > 0) ? corr_idx : PACKET_SIZE;
     }
 
     void
@@ -113,13 +107,12 @@ namespace gr {
 
         int consumed = 0;
         const int produced = work(noutput_items, in_len, consumed, in, out);
-
         consume_each(consumed);
 
         return produced;
     }
 
-    int
+    void
     bytes2frames_impl::send_packet(const in_t *in, out_t *out, int packet_size)
     {
         const int missing = PACKET_SIZE - packet_size;
@@ -127,15 +120,6 @@ namespace gr {
             out[idx] = STATUS_ERR_STOP | STATUS_ERR_START | STATUS_ERR_BYTE;
         }
         memcpy(out+missing, in, (PACKET_SIZE-missing)*sizeof(out_t));
-        int corr = 0;
-        for (int n = 0; n < NSYNC_BYTES; ++n) {
-            if ((out[SYNC_BYTES[n].idx] & 0xff) == SYNC_BYTES[n].value) {
-                ++corr;
-            } else {
-                out[SYNC_BYTES[n].idx] |= STATUS_ERR_SYN;
-            }
-        }
-        return corr >= threshold;
     }
 
     int
@@ -147,10 +131,11 @@ namespace gr {
     {
         int produced = 0;
         while (produced < out_len && consumed < in_len - 239) {
-            const int nsync = correlate(in + consumed);
+            const int nerr = correlate(in + consumed);
             more = false;
-            if (nsync == NSYNC_BYTES) {
-                produced += send_packet(in + consumed, out + produced*PACKET_SIZE);
+            if (nerr == 0) {
+                send_packet(in + consumed, out + produced*PACKET_SIZE);
+                ++produced;
                 consumed += PACKET_SIZE;
 
                 continue;
@@ -161,7 +146,8 @@ namespace gr {
             }
             int sync_idx = find_sync(in + consumed);
 
-            produced += send_packet(in + consumed, out + produced*PACKET_SIZE, sync_idx);
+            send_packet(in + consumed, out + produced*PACKET_SIZE, sync_idx);
+            ++produced;
             consumed += sync_idx;
         }
         return produced;

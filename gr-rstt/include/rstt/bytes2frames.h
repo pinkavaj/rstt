@@ -46,7 +46,7 @@ namespace gr {
        * class. rstt::bytes2frames::make is the public interface for
        * creating new instances.
        */
-      static sptr make(float threshold = 0);
+      static sptr make();
     };
 
   } // namespace rstt

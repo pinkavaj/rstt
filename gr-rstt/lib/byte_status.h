@@ -21,8 +21,7 @@ namespace gr {
       typedef enum {
           STATUS_ERR_START = 0x100,
           STATUS_ERR_BYTE = 0x200,
-          STATUS_ERR_STOP = 0x400,
-          STATUS_ERR_SYN = 0x800
+          STATUS_ERR_STOP = 0x400
       } byte_status_t;
   }
 }

@@ -4,14 +4,7 @@
 	<key>rstt_bytes2frames</key>
     <category>RSTT</category>
 	<import>import rstt</import>
-    <make>rstt.bytes2frames($threshold)</make>
-    <param>
-        <name>Threshold</name>
-        <key>threshold</key>
-        <value>0.3</value>
-        <type>float</type>
-    </param>
-    <check>$threshold &gt;= 0. and $threshold &lt;= 1.</check>
+    <make>rstt.bytes2frames()</make>
 	<sink>
 		<name>in</name>
 		<type>short</type>
@@ -21,8 +14,4 @@
         <type>short</type>
         <vlen>240</vlen>
     </source>
-    <doc>
-        Threshold - &lt;0. - 1.&gt;, output only packets with at least 'threshold' %
-        correlation bytes. Drop all toher (badly broken packets).
-    </doc>
 </block>
