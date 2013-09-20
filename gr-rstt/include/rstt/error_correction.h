@@ -46,7 +46,7 @@ namespace gr {
        * class. rstt::error_correction::make is the public interface for
        * creating new instances.
        */
-      static sptr make(bool guess=false);
+      static sptr make();
     };
 
   } // namespace rstt

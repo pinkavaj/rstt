@@ -66,24 +66,12 @@ e6 75 86 1d d8 76 ca bb 37 94 e0 69 7b 91 34 1a""".replace('\n', '').replace(' '
         self.do(data_src, data_exp, test_block)
         self.tb.run ()
 
-    def test_003(self):
-        """All sync bytes broken + 5 data bytes broken. """
-        data_src = tuple([ord(x) for x in self._packet00.decode('hex')])
-        data_exp = data_src
-        data_src = (0, 0, 0 ,0 ,0 ,0, ) + (0, 0, ) + data_src[8:42] + \
-            (0, 0, ) + data_src[44:70] + (0, 0, ) + data_src[72:196] + \
-            (0, 0, ) + data_src[198:210] + (0, 0, 0, 0, 0, 0, ) + \
-            (0, 0, 0, 0, 0, ) + data_src[221:]
-        test_block = error_correction(True)
-        self.do(data_src, data_exp, test_block)
-        self.tb.run ()
-
     def test_004(self):
         """13 data bytes broken, uncorrectable."""
         data_src = tuple([ord(x) for x in self._packet00.decode('hex')])
         data_src = data_src[:72] + (0, )*13 + data_src[85:]
         data_exp = data_src
-        test_block = error_correction(True)
+        test_block = error_correction()
         self.do(data_src, data_exp, test_block)
         self.tb.run ()
 

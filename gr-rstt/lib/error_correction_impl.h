@@ -32,19 +32,14 @@ namespace gr {
       typedef short in_t;
       typedef short out_t;
 
-      /** Try guess some byte values if correction fails. */
-      bool guess;
-      /** Map sync byte position to value. */
-      std::map<int, unsigned char> syn_bytes;
-      /** Reed-Solomon codec data. */
+      /** Reed-Solomon codec private data. */
       void *rs;
       bool do_correction(const in_t *in, out_t *out) const;
 
      public:
-      error_correction_impl(bool guess);
+      error_correction_impl();
       ~error_correction_impl();
 
-      // Where all the action really happens
       int work(int noutput_items,
 	       gr_vector_const_void_star &input_items,
 	       gr_vector_void_star &output_items);

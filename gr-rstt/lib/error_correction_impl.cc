@@ -46,34 +46,19 @@ namespace gr {
     static const int FRAME_DATA_LEN = FRAME_LEN - FRAME_HDR_LEN - FRAME_RS_LEN;
 
     error_correction::sptr
-    error_correction::make(bool guess)
+    error_correction::make()
     {
       return gnuradio::get_initial_sptr
-        (new error_correction_impl(guess));
+        (new error_correction_impl());
     }
 
-    error_correction_impl::error_correction_impl(bool guess)
+    error_correction_impl::error_correction_impl()
       : gr::sync_block("error_correction",
               gr::io_signature::make(1, 1, sizeof(in_t)*240),
-              gr::io_signature::make(1, 1, sizeof(out_t)*240)),
-              guess(guess)
+              gr::io_signature::make(1, 1, sizeof(out_t)*240))
     {
         rs = init_rs_char(rs_symsize, rs_gfpoly, rs_fcr, rs_prim, rs_nroost);
         assert (d_rs != 0);
-        syn_bytes[6] = 0x65;
-        syn_bytes[7] = 0x10;
-        syn_bytes[42] = 0x69;
-        syn_bytes[43] = 0x0C;
-        syn_bytes[70] = 0x67;
-        syn_bytes[71] = 0x3D;
-        syn_bytes[196] = 0x68;
-        syn_bytes[197] = 0x05;
-        syn_bytes[210] = 0xFF;
-        syn_bytes[211] = 0x02;
-        syn_bytes[212] = 0x02;
-        syn_bytes[213] = 0x00;
-        syn_bytes[214] = 0x02;
-        syn_bytes[215] = 0x00;
     }
 
     error_correction_impl::~error_correction_impl()
@@ -112,10 +97,6 @@ namespace gr {
             const int rs_idx = in_idx < FRAME_HDR_LEN + FRAME_DATA_LEN ?
                 RS_M - 1 - (in_idx - FRAME_HDR_LEN) :
                 RS_N - 1 - (in_idx - FRAME_HDR_LEN - FRAME_DATA_LEN);
-            if (syn_bytes.count(in_idx) && guess) {
-                rs_data[rs_idx] = syn_bytes.at(in_idx);
-                continue;
-            }
             const in_t ival = in[in_idx];
             if (ival & gr::rstt::STATUS_ERR_BYTE) {
                 if (nerasures >= rs_nroost) {
@@ -131,14 +112,12 @@ namespace gr {
         const int ncorr = decode_rs_char(rs, rs_data, erasures, nerasures);
         if (ncorr == -1) {
             nerasures = 0;
-            for (int in_idx = FRAME_HDR_LEN; in_idx < FRAME_LEN - FRAME_RS_LEN; ++in_idx) {
+            for (int in_idx = FRAME_HDR_LEN; in_idx < FRAME_LEN - FRAME_RS_LEN;
+                    ++in_idx) {
                 const in_t ival = in[in_idx];
                 if (ival & (~0xff)) {
                     if (nerasures >= sizeof(erasures)) {
                         return false;
-                    }
-                    if (syn_bytes.count(in_idx)) {
-                        continue;
                     }
                     erasures[nerasures] = in_idx;
                     ++nerasures;
