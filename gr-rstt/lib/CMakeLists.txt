@@ -31,6 +31,7 @@ list(APPEND rstt_sources
     bytes2frames_impl.cc
     error_correction_impl.cc
     decoder_impl.cc
+    invalid_frame_filter_impl.cc
 )
 
 add_library(gnuradio-rstt SHARED ${rstt_sources})
@@ -56,6 +57,8 @@ include_directories(${CPPUNIT_INCLUDE_DIRS})
 list(APPEND test_rstt_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_rstt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_rstt.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_invalid_frame_filter.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/invalid_frame_filter_impl.cc
 )
 
 add_executable(test-rstt ${test_rstt_sources})
