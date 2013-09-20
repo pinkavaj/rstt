@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2013 Jiří Pinkava
+ * Copyright 2013 Jiří Pinkava <j-pi@seznam.cz>.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

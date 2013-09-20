@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2013 Jiří Pinkava <j-pi@seznam.cz>
+ * Copyright 2013 Jiří Pinkava <j-pi@seznam.cz>.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,7 +11,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
  */
 
 #ifndef INCLUDED_RSTT_DECODER_IMPL_H

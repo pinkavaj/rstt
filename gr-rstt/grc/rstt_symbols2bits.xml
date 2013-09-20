@@ -6,7 +6,7 @@
     <import>import rstt</import>
     <make>rstt.symbols2bits($sync_nbits)</make>
     <param>
-        <name>Sync window size (bits)</name>
+        <name>Synchronize N bits</name>
         <key>sync_nbits</key>
         <value>20*10</value>
         <type>int</type>

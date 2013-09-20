@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2013 Jiří Pinkava.
+ * Copyright 2013 Jiří Pinkava <j-pi@seznam.cz>.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,6 @@ namespace gr {
       bytes2frames_impl();
       ~bytes2frames_impl();
 
-      // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 
       int general_work(int noutput_items,

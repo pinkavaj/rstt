@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2013 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2013 Jiří Pinkava <j-pi@seznam.cz>.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,13 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street,
- * Boston, MA 02110-1301, USA.
  */
-
 
 #ifndef INCLUDED_RSTT_BITS2BYTES_H
 #define INCLUDED_RSTT_BITS2BYTES_H
@@ -29,7 +23,7 @@ namespace gr {
   namespace rstt {
 
     /*!
-     * \brief <+description of block+>
+     * \brief Convert bit stream to byte stream.
      * \ingroup rstt
      *
      */

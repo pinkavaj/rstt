@@ -6,7 +6,7 @@
 	<import>import rstt</import>
 	<make>rstt.bits2bytes($sync_nbytes)</make>
 	<param>
-		<name>Sync window size (bytes)</name>
+		<name>Synchronize N bytes</name>
 		<key>sync_nbytes</key>
 		<value>32</value>
 		<type>int</type>
