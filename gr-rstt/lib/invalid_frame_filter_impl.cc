@@ -86,7 +86,7 @@ namespace gr {
             if (type == 0xff) {
                 break;
             }
-            if (in + len < in_end) {
+            if (in + 2 + len + 2 <= in_end) {
                 if (chech_crc(in + 2, len)) {
                     return true;
                 }
