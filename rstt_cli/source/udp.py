@@ -8,7 +8,7 @@ class Udp:
     def __init__(self, address):
         host, port = address.split(':')
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind((host, port))
+        self.sock.bind((host, int(port)))
 
     def get_frame(self):
       data, server = self.sock.recvfrom(1024)
