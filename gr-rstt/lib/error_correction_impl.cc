@@ -31,13 +31,13 @@ namespace gr {
     static const int rs_gfpoly = 0x11d;
     static const int rs_fcr = 0;
     static const int rs_prim = 1;
-    static const int rs_nroost = 24;
+    static const int rs_nroots = 24;
 
     static const int RS_N = (1 << rs_symsize) - 1;
-    static const int RS_M = RS_N - rs_nroost;
+    static const int RS_M = RS_N - rs_nroots;
     static const int FRAME_LEN = 240;
     static const int FRAME_HDR_LEN = 6;
-    static const int FRAME_RS_LEN = rs_nroost;
+    static const int FRAME_RS_LEN = rs_nroots;
     static const int FRAME_DATA_LEN = FRAME_LEN - FRAME_HDR_LEN - FRAME_RS_LEN;
 
     error_correction::sptr
@@ -49,10 +49,10 @@ namespace gr {
 
     error_correction_impl::error_correction_impl()
       : gr::sync_block("error_correction",
-              gr::io_signature::make(1, 1, sizeof(in_t)*240),
-              gr::io_signature::make(1, 1, sizeof(out_t)*240))
+              gr::io_signature::make(1, 1, sizeof(in_t)*FRAME_LEN),
+              gr::io_signature::make(1, 1, sizeof(out_t)*FRAME_LEN))
     {
-        rs = init_rs_char(rs_symsize, rs_gfpoly, rs_fcr, rs_prim, rs_nroost);
+        rs = init_rs_char(rs_symsize, rs_gfpoly, rs_fcr, rs_prim, rs_nroots);
         assert (d_rs != 0);
     }
 
@@ -71,10 +71,10 @@ namespace gr {
 
         for (int frame_num = 0; frame_num < noutput_items; ++frame_num) {
             if (!do_correction(in, out)) {
-                memcpy(out, in, 240*sizeof(in_t));
+                memcpy(out, in, FRAME_LEN*sizeof(in_t));
             }
-            in += 240;
-            out += 240;
+            in += FRAME_LEN;
+            out += FRAME_LEN;
         }
 
         return noutput_items;
@@ -84,7 +84,7 @@ namespace gr {
     error_correction_impl::do_correction(const in_t *in, out_t *out) const
     {
         unsigned char rs_data[RS_N];
-        int erasures[rs_nroost];
+        int erasures[rs_nroots];
         int nerasures = 0;
 
         memset(rs_data, 0, sizeof(rs_data));
@@ -94,7 +94,7 @@ namespace gr {
                 RS_N - 1 - (in_idx - FRAME_HDR_LEN - FRAME_DATA_LEN);
             const in_t ival = in[in_idx];
             if (ival & gr::rstt::STATUS_ERR_BYTE) {
-                if (nerasures >= rs_nroost) {
+                if (nerasures >= rs_nroots) {
                     return false;
                 }
                 erasures[nerasures] = rs_idx;
