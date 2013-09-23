@@ -21,6 +21,8 @@
 #include <boost/crc.hpp>
 #include "invalid_frame_filter_impl.h"
 
+#include <stdio.h>
+
 namespace gr {
   namespace rstt {
 
@@ -35,13 +37,12 @@ namespace gr {
 
     invalid_frame_filter_impl::invalid_frame_filter_impl()
       : gr::block("invalid_frame_filter",
-              gr::io_signature::make(1, 1, sizeof(in_t)*240),
-              gr::io_signature::make(1, 1, sizeof(out_t)*240))
+              gr::io_signature::make(1, 1, sizeof(in_t)*FRAME_LEN),
+              gr::io_signature::make(1, 1, sizeof(out_t)*FRAME_LEN))
     {}
 
     invalid_frame_filter_impl::~invalid_frame_filter_impl()
-    {
-    }
+    {}
 
     void
     invalid_frame_filter_impl::forecast (int noutput_items,
@@ -60,7 +61,8 @@ namespace gr {
         out_t *out = (out_t *) output_items[0];
 
         int out_idx = 0;
-        for (int in_idx = 0; in_idx < ninput_items[0]; ++in_idx) {
+        int in_idx = 0;
+        for (; in_idx < ninput_items[0] && out_idx < noutput_items; ++in_idx) {
             if (!is_frame_valid(in+FRAME_LEN*in_idx)) {
                 continue;
             }
@@ -68,7 +70,7 @@ namespace gr {
                     sizeof(in_t) * FRAME_LEN);
             ++out_idx;
         }
-        consume_each (ninput_items[0]);
+        consume_each (in_idx);
 
         return out_idx;
     }
