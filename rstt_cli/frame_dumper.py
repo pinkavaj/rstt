@@ -8,13 +8,16 @@ from math import isfinite
 from struct import unpack
 from sys import argv
 
-class UdpClient:
+class Client:
     """UDP client for reversing data from meteosonde."""
 
     def __init__(self, src_url, log_prefix=None):
         self._src = source.open(src_url)
         self._calib_log = None
+        self._gps_log = None
         self._meas_log = None
+        self._test_log = None
+        self._calib_bin = None
         if log_prefix is not None:
             self._gps_log = open(log_prefix + '.gps.csv', 'w')
             self._meas_log = open(log_prefix + '.meas.csv', 'w')
@@ -177,6 +180,6 @@ if __name__ == '__main__':
     if len(argv) < 2:
         raise ValueError("Missing parameter: source URL")
     log_prefix = None if len(argv) < 3 else argv[2]
-    client = UdpClient(argv[1], log_prefix=log_prefix)
+    client = Client(argv[1], log_prefix=log_prefix)
     client.loop()
 
