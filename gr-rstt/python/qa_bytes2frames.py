@@ -34,6 +34,7 @@ class qa_bytes2frames(gr_unittest.TestCase):
         result_data = tuple([int(x) for x in dst.data()])
         self.assertEqual(data_exp, result_data)
 
+    # trivial valid sync
     def test_00(self):
         data_src =(0x2A, )*5 + (0x10, 0x65, 0x10) + (0, )*34 + \
                 (0x69, 0x0C, ) + (0, )*26 + \
@@ -45,6 +46,7 @@ class qa_bytes2frames(gr_unittest.TestCase):
         test_block = bytes2frames()
         self.do(data_src, data_exp, test_block)
 
+    # sync with offset
     def test_01(self):
         data_src = (0x2A, )*5 + (0x10, 0x65, 0x10) + (0, )*34 + \
                 (0x69, 0x0C, ) + (0, )*26 + \
@@ -57,8 +59,9 @@ class qa_bytes2frames(gr_unittest.TestCase):
                 (0x700, 0x700, ) + (0x700, )*124 + \
                 (0x700, 0x700, ) + (0x700, )*12 + \
                 (0x700, 0x700, 0x700, 0x700, 0x700, ) + (0x700, )*15 + (0x01, )*10 + \
+                data_src + \
                 data_src
-        data_src = (0x01,)* 10 + data_src
+        data_src = (0x01,)* 10 + data_src + data_src
         #data_src = data_src + data_src
         test_block = bytes2frames()
         self.do(data_src, data_exp, test_block)
