@@ -109,12 +109,15 @@ namespace gr {
             nerasures = 0;
             for (int in_idx = FRAME_HDR_LEN; in_idx < FRAME_LEN - FRAME_RS_LEN;
                     ++in_idx) {
+                const int rs_idx = in_idx < FRAME_HDR_LEN + FRAME_DATA_LEN ?
+                    RS_M - 1 - (in_idx - FRAME_HDR_LEN) :
+                    RS_N - 1 - (in_idx - FRAME_HDR_LEN - FRAME_DATA_LEN);
                 const in_t ival = in[in_idx];
                 if (ival & (~0xff)) {
-                    if (nerasures >= sizeof(erasures)) {
+                    if (nerasures >= rs_nroots) {
                         return false;
                     }
-                    erasures[nerasures] = in_idx;
+                    erasures[nerasures] = rs_idx;
                     ++nerasures;
                     continue;
                 }
