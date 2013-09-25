@@ -27,6 +27,8 @@ namespace gr {
   namespace rstt {
 
     static const int FRAME_LEN = 240;
+    static const int FRAME_FEC_LEN = 24;
+    static const int FRAME_HDR_LEN = 6;
 
     invalid_frame_filter::sptr
     invalid_frame_filter::make()
@@ -78,8 +80,8 @@ namespace gr {
     bool
     invalid_frame_filter_impl::is_frame_valid(const in_t *in)
     {
-        const in_t *const in_end = in + FRAME_LEN - 24;
-        in += 6;
+        const in_t *const in_end = in + FRAME_LEN - FRAME_FEC_LEN;
+        in += FRAME_HDR_LEN;
         while(in < in_end) {
             const in_t type = in[0] & 0xff;
             const int len = in[1] * 2;
