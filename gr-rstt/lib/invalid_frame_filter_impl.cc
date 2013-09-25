@@ -21,8 +21,6 @@
 #include <boost/crc.hpp>
 #include "invalid_frame_filter_impl.h"
 
-#include <stdio.h>
-
 namespace gr {
   namespace rstt {
 
@@ -77,26 +75,35 @@ namespace gr {
         return out_idx;
     }
 
-    bool
+    int
     invalid_frame_filter_impl::is_frame_valid(const in_t *in)
     {
+        int N = 0;
+        bool all_valid = true;
         const in_t *const in_end = in + FRAME_LEN - FRAME_FEC_LEN;
         in += FRAME_HDR_LEN;
         while(in < in_end) {
             const in_t type = in[0] & 0xff;
             const int len = in[1] * 2;
             if (type == 0xff) {
+                in += 2 + len;
+                ++N;
                 break;
             }
             if (in + 2 + len + 2 <= in_end) {
-                if (chech_crc(in + 2, len)) {
-                    return true;
+                if (!chech_crc(in + 2, len)) {
+                    all_valid = false;
                 }
+                ++N;
             }
             in += 2 + len + 2;
         }
-        return false;
+        if (in != in_end) {
+            all_valid = false;
+        }
+        return all_valid ? N : -N;
     }
+
     bool
     invalid_frame_filter_impl::chech_crc(const in_t *in, int len)
     {

@@ -28,10 +28,14 @@ namespace gr {
     public:
       CPPUNIT_TEST_SUITE(qa_invalid_frame_filter);
       CPPUNIT_TEST(t1);
+      CPPUNIT_TEST(t2);
+      CPPUNIT_TEST(t3);
       CPPUNIT_TEST_SUITE_END();
 
     private:
       void t1();
+      void t2();
+      void t3();
     };
 
   } /* namespace rstt */

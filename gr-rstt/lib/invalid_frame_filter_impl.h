@@ -40,7 +40,13 @@ namespace gr {
 		       gr_vector_const_void_star &input_items,
 		       gr_vector_void_star &output_items);
 
-      static bool is_frame_valid(const in_t *in);
+      /**
+        Check subframes CRC.
+        Returns positive number if all subframes are valid,
+        negative number if some subframes are invalid, or zero
+        if no valid subframe is found.
+      **/
+      static int is_frame_valid(const in_t *in);
     };
 
   } // namespace rstt
