@@ -76,7 +76,7 @@ e6 75 86 1d d8 76 ca bb 37 94 e0 69 7b 91 34 1a""".replace('\n', '').replace(' '
         self.tb.run ()
 
     def test_005(self):
-        """13 data bytes broken (1 erasure), correctable."""
+        """11 data bytes broken (2 erasure), correctable."""
         data_src = tuple([ord(x) for x in self._packet00.decode('hex')])
         data_exp = data_src
         data_src = data_src[:72] + (0, )*11 + (0x400, ) * 2 + data_src[85:]
