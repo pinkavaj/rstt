@@ -24,12 +24,29 @@ namespace gr {
     class error_correction_impl : public error_correction
     {
      private:
-      typedef short in_t;
-      typedef short out_t;
+      typedef unsigned short in_t;
+      typedef unsigned short out_t;
 
       /** Reed-Solomon codec private data. */
       void *rs;
-      bool do_correction(const in_t *in, out_t *out) const;
+
+      struct pred_byte_err;
+      struct pred_recv_err;
+
+      /** Try serveral correction algorithms. */
+      bool do_corrections(const in_t *in, out_t *out) const;
+
+      /** Try process correction for specified value algorithm. */
+      template <class GetValue>
+      bool do_correction(const in_t *in, out_t *out, GetValue get_value) const;
+
+      /** Evaluate Reed-Solomon correction code. */
+      template <class GetValue>
+      int do_rs_correction(const in_t *in, unsigned char *rs_data,
+              GetValue get_value) const;
+
+      /** copy back corrected data and (correct) header */
+      void copy_corrected(unsigned char *rs_data, out_t *out) const;
 
      public:
       error_correction_impl();

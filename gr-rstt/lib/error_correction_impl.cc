@@ -70,7 +70,7 @@ namespace gr {
         out_t *out = (out_t *) output_items[0];
 
         for (int frame_num = 0; frame_num < noutput_items; ++frame_num) {
-            if (!do_correction(in, out)) {
+            if (!do_corrections(in, out)) {
                 memcpy(out, in, FRAME_LEN*sizeof(in_t));
             }
             in += FRAME_LEN;
@@ -80,22 +80,22 @@ namespace gr {
         return noutput_items;
     }
 
-    bool
-    error_correction_impl::do_correction(const in_t *in, out_t *out) const
+    template <class GetValue>
+    int error_correction_impl::do_rs_correction(const in_t *in,
+            unsigned char *rs_data, GetValue get_value) const
     {
-        unsigned char rs_data[RS_N];
         int erasures[rs_nroots];
         int nerasures = 0;
 
-        memset(rs_data, 0, sizeof(rs_data));
+        memset(rs_data, 0, RS_N);
         for (int in_idx = FRAME_HDR_LEN; in_idx < FRAME_LEN; ++in_idx) {
             const int rs_idx = in_idx < FRAME_HDR_LEN + FRAME_DATA_LEN ?
                 RS_M - 1 - (in_idx - FRAME_HDR_LEN) :
                 RS_N - 1 - (in_idx - FRAME_HDR_LEN - FRAME_DATA_LEN);
-            const in_t ival = in[in_idx];
-            if (ival & gr::rstt::STATUS_ERR_BYTE) {
+            const int ival = get_value(in[in_idx], in_idx);
+            if (ival == -1) {
                 if (nerasures >= rs_nroots) {
-                    return false;
+                    return -1;
                 }
                 erasures[nerasures] = rs_idx;
                 ++nerasures;
@@ -104,31 +104,57 @@ namespace gr {
             rs_data[rs_idx] = ival;
         }
 
-        const int ncorr = decode_rs_char(rs, rs_data, erasures, nerasures);
-        if (ncorr == -1) {
-            nerasures = 0;
-            for (int in_idx = FRAME_HDR_LEN; in_idx < FRAME_LEN - FRAME_RS_LEN;
-                    ++in_idx) {
-                const int rs_idx = in_idx < FRAME_HDR_LEN + FRAME_DATA_LEN ?
-                    RS_M - 1 - (in_idx - FRAME_HDR_LEN) :
-                    RS_N - 1 - (in_idx - FRAME_HDR_LEN - FRAME_DATA_LEN);
-                const in_t ival = in[in_idx];
-                if (ival & (~0xff)) {
-                    if (nerasures >= rs_nroots) {
-                        return false;
-                    }
-                    erasures[nerasures] = rs_idx;
-                    ++nerasures;
-                    continue;
-                }
-            }
-            const int ncorr2 = decode_rs_char(rs, rs_data, erasures, nerasures);
-            if (ncorr2 == -1) {
-                return false;
-            }
+        return decode_rs_char(rs, rs_data, erasures, nerasures);
+    }
+
+    struct error_correction_impl::pred_byte_err {
+        int operator()(in_t val, int idx) const {
+            return (val & gr::rstt::STATUS_ERR_BYTE) ? -1 : (val & 0xff);
+        }
+    };
+
+    struct error_correction_impl::pred_recv_err {
+        int operator()(in_t val, int idx) const {
+            return (val & (~0xff)) ? -1 : (val & 0xff);
+        }
+    };
+
+    template <class GetValue>
+    bool error_correction_impl::do_correction(const in_t *in, out_t *out,
+            GetValue get_value) const
+    {
+        unsigned char rs_data[RS_N];
+
+        const int ncorr = do_rs_correction(in, rs_data, get_value);
+        if (ncorr < 0) {
+            return false;
         }
 
-        // copy back corrected data and create new (correct) header
+        if (ncorr > 0) {
+            // todo: check subframes crc
+        }
+
+        copy_corrected(rs_data, out);
+
+        return true;
+    }
+
+    bool
+    error_correction_impl::do_corrections(const in_t *in, out_t *out) const
+    {
+        if (do_correction(in, out, pred_byte_err())) {
+            return true;
+        }
+
+        if (do_correction(in, out, pred_recv_err())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    void error_correction_impl::copy_corrected(unsigned char *rs_data, out_t *out) const
+    {
         out[0] = '*';
         out[1] = '*';
         out[2] = '*';
@@ -141,8 +167,6 @@ namespace gr {
                 RS_N - 1 - (out_idx - FRAME_HDR_LEN - FRAME_DATA_LEN);
             out[out_idx] = rs_data[rs_idx];
         }
-
-        return true;
     }
 
   } /* namespace rstt */
