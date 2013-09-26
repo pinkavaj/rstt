@@ -13,8 +13,8 @@
  * GNU General Public License for more details.
  */
 
-#include "qa_invalid_frame_filter.h"
-#include "invalid_frame_filter_impl.h"
+#include "qa_error_correction.h"
+#include "error_correction_impl.h"
 #include <cppunit/TestAssert.h>
 
 namespace gr {
@@ -22,9 +22,9 @@ namespace gr {
 
     // valid
     void
-    qa_invalid_frame_filter::t1()
+    qa_error_correction::t1()
     {
-        const short in[240] = {
+        const unsigned short in[240] = {
             // frame header
             0x2A, 0x2A, 0x2A, 0x2A, 0x2A, 0x10,
             // valid subframe
@@ -70,14 +70,14 @@ namespace gr {
         };
 
         CPPUNIT_ASSERT(
-            invalid_frame_filter_impl::is_frame_valid(in) == 2);
+            error_correction_impl::is_frame_valid(in) == 2);
     }
 
     // invalid CRC
     void
-    qa_invalid_frame_filter::t2()
+    qa_error_correction::t2()
     {
-        const short in[240] = {
+        const unsigned short in[240] = {
             // frame header
             0x2A, 0x2A, 0x2A, 0x2A, 0x2A, 0x10,
             // valid subframe
@@ -123,14 +123,14 @@ namespace gr {
         };
 
         CPPUNIT_ASSERT(
-            invalid_frame_filter_impl::is_frame_valid(in) == -2);
+            error_correction_impl::is_frame_valid(in) == -2);
     }
 
     // invalid length
     void
-    qa_invalid_frame_filter::t3()
+    qa_error_correction::t3()
     {
-        const short in[240] = {
+        const unsigned short in[240] = {
             // frame header
             0x2A, 0x2A, 0x2A, 0x2A, 0x2A, 0x10,
             // valid subframe
@@ -176,7 +176,7 @@ namespace gr {
         };
 
         CPPUNIT_ASSERT(
-            invalid_frame_filter_impl::is_frame_valid(in) == -2);
+            error_correction_impl::is_frame_valid(in) == -2);
     }
 
   } /* namespace rstt */

@@ -26,6 +26,5 @@ install(FILES
     bits2bytes.h
     bytes2frames.h
     error_correction.h
-    decoder.h
-    invalid_frame_filter.h DESTINATION include/rstt
+    decoder.h DESTINATION include/rstt
 )

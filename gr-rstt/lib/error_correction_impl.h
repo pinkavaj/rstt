@@ -48,9 +48,19 @@ namespace gr {
       /** copy back corrected data and (correct) header */
       void copy_corrected(unsigned char *rs_data, out_t *out) const;
 
+      static bool chech_crc(const in_t *in, int len);
+
      public:
       error_correction_impl();
       ~error_correction_impl();
+
+      /**
+        Check subframes CRC.
+        Returns positive number if all subframes are valid,
+        negative number if some subframes are invalid, or zero
+        if no valid subframe is found.
+      **/
+      static int is_frame_valid(const in_t *in);
 
       int work(int noutput_items,
 	       gr_vector_const_void_star &input_items,

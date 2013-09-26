@@ -26,13 +26,13 @@
  */
 
 #include "qa_rstt.h"
-#include "qa_invalid_frame_filter.h"
+#include "qa_error_correction.h"
 
 CppUnit::TestSuite *
 qa_rstt::suite()
 {
   CppUnit::TestSuite *s = new CppUnit::TestSuite("rstt");
-  s->addTest(gr::rstt::qa_invalid_frame_filter::suite());
+  s->addTest(gr::rstt::qa_error_correction::suite());
 
   return s;
 }

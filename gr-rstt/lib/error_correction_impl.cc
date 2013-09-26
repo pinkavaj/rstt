@@ -17,6 +17,7 @@
 #include "config.h"
 #endif
 
+#include <boost/crc.hpp>
 #include <gnuradio/io_signature.h>
 extern "C" {
 #include <gnuradio/fec/rs.h>
@@ -36,6 +37,7 @@ namespace gr {
     static const int RS_N = (1 << rs_symsize) - 1;
     static const int RS_M = RS_N - rs_nroots;
     static const int FRAME_LEN = 240;
+    static const int FRAME_FEC_LEN = rs_nroots;
     static const int FRAME_HDR_LEN = 6;
     static const int FRAME_RS_LEN = rs_nroots;
     static const int FRAME_DATA_LEN = FRAME_LEN - FRAME_HDR_LEN - FRAME_RS_LEN;
@@ -167,6 +169,49 @@ namespace gr {
                 RS_N - 1 - (out_idx - FRAME_HDR_LEN - FRAME_DATA_LEN);
             out[out_idx] = rs_data[rs_idx];
         }
+    }
+
+    int
+    error_correction_impl::is_frame_valid(const in_t *in)
+    {
+        int N = 0;
+        bool all_valid = true;
+        const in_t *const in_end = in + FRAME_LEN - FRAME_FEC_LEN;
+        in += FRAME_HDR_LEN;
+        while(in < in_end) {
+            const in_t type = in[0] & 0xff;
+            const int len = in[1] * 2;
+            if (type == 0xff) {
+                in += 2 + len;
+                ++N;
+                break;
+            }
+            if (in + 2 + len + 2 <= in_end) {
+                if (!chech_crc(in + 2, len)) {
+                    all_valid = false;
+                }
+                ++N;
+            }
+            in += 2 + len + 2;
+        }
+        if (in != in_end) {
+            all_valid = false;
+        }
+        return all_valid ? N : -N;
+    }
+
+    bool
+    error_correction_impl::chech_crc(const in_t *in, int len)
+    {
+        boost::crc_ccitt_type crc;
+
+        for (int i = 0; i < len; ++i) {
+            crc.process_byte(in[i] & 0xff);
+        }
+        boost::crc_ccitt_type::value_type crc_exp =
+              (in[len] & 0xff) | ((in[len + 1] & 0xff) << 8);
+
+        return crc.checksum() == crc_exp;
     }
 
   } /* namespace rstt */

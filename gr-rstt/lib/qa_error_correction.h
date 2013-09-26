@@ -23,10 +23,10 @@
 namespace gr {
   namespace rstt {
 
-    class qa_invalid_frame_filter : public CppUnit::TestCase
+    class qa_error_correction : public CppUnit::TestCase
     {
     public:
-      CPPUNIT_TEST_SUITE(qa_invalid_frame_filter);
+      CPPUNIT_TEST_SUITE(qa_error_correction);
       CPPUNIT_TEST(t1);
       CPPUNIT_TEST(t2);
       CPPUNIT_TEST(t3);
