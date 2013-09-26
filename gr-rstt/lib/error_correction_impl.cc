@@ -132,11 +132,12 @@ namespace gr {
             return false;
         }
 
-        if (ncorr > 0) {
-            // todo: check subframes crc
-        }
-
         copy_corrected(rs_data, out);
+        if (ncorr > 0) {
+            if (is_frame_valid(out) <= 0) {
+                return false;
+            }
+        }
 
         return true;
     }
