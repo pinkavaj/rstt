@@ -153,6 +153,14 @@ namespace gr {
             return true;
         }
 
+        /*
+TODO: Add guessing correction.
+Some bytes in frame keep the same value for many consecutive frames or even
+does not change at all. We can do statistics and then guess correct values for
+those bytes. This trick might increase error correction capability from 12 bytes
+to approxymately 17 bytes (from 5% to 7.4%).
+
+    */
         return false;
     }
 
