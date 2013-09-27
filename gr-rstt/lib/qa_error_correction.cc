@@ -123,7 +123,7 @@ namespace gr {
         };
 
         CPPUNIT_ASSERT(
-            error_correction_impl::is_frame_valid(in) == -2);
+            error_correction_impl::is_frame_valid(in) == -1);
     }
 
     // invalid length
@@ -176,7 +176,7 @@ namespace gr {
         };
 
         CPPUNIT_ASSERT(
-            error_correction_impl::is_frame_valid(in) == -2);
+            error_correction_impl::is_frame_valid(in) == -1);
     }
 
   } /* namespace rstt */

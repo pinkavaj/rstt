@@ -196,14 +196,17 @@ to approxymately 17 bytes (from 5% to 7.4%).
             const int len = in[1] * 2;
             if (type == 0xff) {
                 in += 2 + len;
-                ++N;
+                if (in == in_end) {
+                    ++N;
+                }
                 break;
             }
             if (in + 2 + len + 2 <= in_end) {
                 if (!chech_crc(in + 2, len)) {
                     all_valid = false;
+                } else {
+                    ++N;
                 }
-                ++N;
             }
             in += 2 + len + 2;
         }
