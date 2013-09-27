@@ -43,16 +43,17 @@ namespace gr {
     static const int FRAME_DATA_LEN = FRAME_LEN - FRAME_HDR_LEN - FRAME_RS_LEN;
 
     error_correction::sptr
-    error_correction::make()
+    error_correction::make(bool drop_invalid)
     {
       return gnuradio::get_initial_sptr
-        (new error_correction_impl());
+        (new error_correction_impl(drop_invalid));
     }
 
-    error_correction_impl::error_correction_impl()
+    error_correction_impl::error_correction_impl(bool drop_invalid)
       : gr::sync_block("error_correction",
               gr::io_signature::make(1, 1, sizeof(in_t)*FRAME_LEN),
-              gr::io_signature::make(1, 1, sizeof(out_t)*FRAME_LEN))
+              gr::io_signature::make(1, 1, sizeof(out_t)*FRAME_LEN)),
+        drop_invalid(drop_invalid)
     {
         rs = init_rs_char(rs_symsize, rs_gfpoly, rs_fcr, rs_prim, rs_nroots);
         assert (d_rs != 0);
@@ -71,11 +72,14 @@ namespace gr {
         const in_t *in = (const in_t *) input_items[0];
         out_t *out = (out_t *) output_items[0];
 
-        for (int frame_num = 0; frame_num < noutput_items; ++frame_num) {
+        for (int frame_num = 0; frame_num < noutput_items;
+                ++frame_num, in += FRAME_LEN) {
             if (!do_corrections(in, out)) {
+                if (drop_invalid && is_frame_valid(in) == 0) {
+                    continue;
+                }
                 memcpy(out, in, FRAME_LEN*sizeof(in_t));
             }
-            in += FRAME_LEN;
             out += FRAME_LEN;
         }
 

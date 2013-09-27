@@ -30,6 +30,8 @@ namespace gr {
       /** Reed-Solomon codec private data. */
       void *rs;
 
+      bool drop_invalid;
+
       struct pred_byte_err;
       struct pred_recv_err;
 
@@ -51,7 +53,7 @@ namespace gr {
       static bool chech_crc(const in_t *in, int len);
 
      public:
-      error_correction_impl();
+      error_correction_impl(bool drop_invalid);
       ~error_correction_impl();
 
       /**

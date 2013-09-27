@@ -37,8 +37,7 @@ namespace gr {
     {
         fbits2bytes = bits2bytes::make(sync_nbytes);
         fbytes2frames = bytes2frames::make();
-        // TODO: drop_invalid
-        ferror_correction = error_correction::make();
+        ferror_correction = error_correction::make(drop_invalid);
         fsymbols2bits = symbols2bits::make(sync_nbits);
 
         connect(self(), 0, fsymbols2bits, 0);

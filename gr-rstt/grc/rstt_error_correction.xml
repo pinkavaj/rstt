@@ -5,6 +5,12 @@
   <category>RSTT</category>
   <import>import rstt</import>
   <make>rstt.error_correction()</make>
+  <param>
+    <name>Drop invalid frames</name>
+    <key>drop_invalid</key>
+    <value>True</value>
+    <type>bool</type>
+  </param>
   <sink>
     <name>in</name>
     <type>short</type>
