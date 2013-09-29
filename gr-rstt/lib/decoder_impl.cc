@@ -24,20 +24,20 @@ namespace gr {
   namespace rstt {
 
     decoder::sptr
-    decoder::make(int sync_nbits, int sync_nbytes, bool drop_invalid)
+    decoder::make(int sync_nbits, int sync_nbytes, bool drop_invalid, int guess_level)
     {
       return gnuradio::get_initial_sptr
-        (new decoder_impl(sync_nbits, sync_nbytes, drop_invalid));
+        (new decoder_impl(sync_nbits, sync_nbytes, drop_invalid, guess_level));
     }
 
-    decoder_impl::decoder_impl(int sync_nbits, int sync_nbytes, bool drop_invalid)
+    decoder_impl::decoder_impl(int sync_nbits, int sync_nbytes, bool drop_invalid, int guess_level)
       : gr::hier_block2("decoder",
               gr::io_signature::make(1, 1, sizeof(in_t)),
               gr::io_signature::make(1, 1, sizeof(out_t)*240))
     {
         fbits2bytes = bits2bytes::make(sync_nbytes);
         fbytes2frames = bytes2frames::make();
-        ferror_correction = error_correction::make(drop_invalid);
+        ferror_correction = error_correction::make(drop_invalid, guess_level);
         fsymbols2bits = symbols2bits::make(sync_nbits);
 
         connect(self(), 0, fsymbols2bits, 0);

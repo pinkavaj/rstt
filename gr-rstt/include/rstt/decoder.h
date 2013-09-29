@@ -36,13 +36,21 @@ namespace gr {
       /*!
        * \brief Return a shared_ptr to a new instance of rstt::decoder.
        *
+       * \param sync_nbits Use N bits for bite stream synchronization.
+       * \param sync_nbytes Use N bytes for byte stream synchronization.
+       * \param drop_invalid Drop invalid frames (keep partialy valid).
+       * \param guess_level Error correction based on byte value distribution
+       * probability. 0 - disabled, 1 - correct only well known bytes,
+       * 4/6/8 - good values for value guessing (with error probability N/256)
+       * 256 - try guess all bytes (nonsens)
+       *
        * To avoid accidental use of raw pointers, rstt::decoder's
        * constructor is in a private implementation
        * class. rstt::decoder::make is the public interface for
        * creating new instances.
        */
       static sptr make(int sync_nbits = 20*10, int sync_nbytes = 32,
-              bool drop_invalid = true);
+              bool drop_invalid = true, int guess_level = 1);
     };
 
   } // namespace rstt

@@ -37,7 +37,7 @@ namespace gr {
        symbols2bits::sptr fsymbols2bits;
 
      public:
-      decoder_impl(int sync_nbits, int sync_nbytes, bool drop_invalid);
+      decoder_impl(int sync_nbits, int sync_nbytes, bool drop_invalid, int guess_level);
       ~decoder_impl();
     };
 

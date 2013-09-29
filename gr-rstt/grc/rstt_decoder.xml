@@ -23,6 +23,12 @@
     <value>True</value>
     <type>bool</type>
   </param>
+  <param>
+    <name>Guess corrections</name>
+    <key>guess_level</key>
+    <value>2</value>
+    <type>int</type>
+  </param>
   <sink>
     <name>in</name>
     <type>byte</type>
@@ -32,4 +38,12 @@
     <type>short</type>
     <vlen>240</vlen>
   </source>
+  <doc>
+    Guess correction set level of 'guessing' for error correction based on
+    byte value distribution probability.
+    0 - disabled,
+    1 - correct only well known bytes,
+    4/6/8 - good values for value guessing (with error probability N/256)
+    256 - try guess all bytes (nonsens)
+  </doc>
 </block>
