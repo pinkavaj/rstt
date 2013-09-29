@@ -17,6 +17,7 @@
 #define INCLUDED_RSTT_ERROR_CORRECTION_IMPL_H
 
 #include <rstt/error_correction.h>
+#include "error_correction_guess.h"
 
 namespace gr {
   namespace rstt {
@@ -31,9 +32,12 @@ namespace gr {
       void *rs;
 
       bool drop_invalid;
+      int guess_level;
 
       struct pred_byte_err;
       struct pred_recv_err;
+
+      error_correction_guess guess_correction;
 
       /** Try serveral correction algorithms. */
       bool do_corrections(const in_t *in, out_t *out) const;
@@ -53,7 +57,7 @@ namespace gr {
       static bool chech_crc(const in_t *in, int len);
 
      public:
-      error_correction_impl(bool drop_invalid);
+      error_correction_impl(bool drop_invalid, int guess_level);
       ~error_correction_impl();
 
       /**

@@ -43,17 +43,18 @@ namespace gr {
     static const int FRAME_DATA_LEN = FRAME_LEN - FRAME_HDR_LEN - FRAME_RS_LEN;
 
     error_correction::sptr
-    error_correction::make(bool drop_invalid)
+    error_correction::make(bool drop_invalid, int guess_level)
     {
       return gnuradio::get_initial_sptr
-        (new error_correction_impl(drop_invalid));
+        (new error_correction_impl(drop_invalid, guess_level));
     }
 
-    error_correction_impl::error_correction_impl(bool drop_invalid)
+    error_correction_impl::error_correction_impl(bool drop_invalid, int guess_level)
       : gr::sync_block("error_correction",
               gr::io_signature::make(1, 1, sizeof(in_t)*FRAME_LEN),
               gr::io_signature::make(1, 1, sizeof(out_t)*FRAME_LEN)),
-        drop_invalid(drop_invalid)
+        drop_invalid(drop_invalid),
+        guess_level(guess_level)
     {
         rs = init_rs_char(rs_symsize, rs_gfpoly, rs_fcr, rs_prim, rs_nroots);
         assert (d_rs != 0);
@@ -79,7 +80,10 @@ namespace gr {
                     continue;
                 }
                 memcpy(out, in, FRAME_LEN*sizeof(in_t));
+            } else {
+                guess_correction.update(out);
             }
+
             out += FRAME_LEN;
         }
 
@@ -138,7 +142,8 @@ namespace gr {
 
         copy_corrected(rs_data, out);
         if (ncorr > 0) {
-            if (is_frame_valid(out) <= 0) {
+            // valid frame must contain at least 2 subframes (data + padding)
+            if (is_frame_valid(out) <= 1) {
                 return false;
             }
         }
@@ -157,14 +162,21 @@ namespace gr {
             return true;
         }
 
-        /*
-TODO: Add guessing correction.
-Some bytes in frame keep the same value for many consecutive frames or even
-does not change at all. We can do statistics and then guess correct values for
-those bytes. This trick might increase error correction capability from 12 bytes
-to approxymately 17 bytes (from 5% to 7.4%).
+        int lvl_previous = 0;
+        for (int lvl = 1; lvl < guess_level; ) {
+          error_correction_guess::predicate predicate =
+                guess_correction.get_predicate(lvl_previous, lvl);
+            if (do_correction(in, out, predicate)) {
+                return true;
+            }
+            predicate = guess_correction.get_predicate(lvl, lvl);
+            if (do_correction(in, out, predicate)) {
+                return true;
+            }
+            lvl_previous = lvl;
+            lvl = predicate.get_next_level();
+        }
 
-    */
         return false;
     }
 

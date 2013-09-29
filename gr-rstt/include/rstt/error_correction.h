@@ -24,7 +24,7 @@ namespace gr {
   namespace rstt {
 
     /*!
-     * \brief <+description of block+>
+     * \brief Correct errors in recieved radisonde frames.
      * \ingroup rstt
      *
      */
@@ -36,12 +36,18 @@ namespace gr {
       /*!
        * \brief Return a shared_ptr to a new instance of rstt::error_correction.
        *
+       * \param drop_invalid Drop totaly broken frames (keep partialy broken).
+       * \param guess_level Enable error correction by guessing byte values,
+       *    based on content of previous frames.
+       *    0 - guessing disables, 1 - known for sure, 4/6/8 - safe and usefull
+       *    256 - maximum (nonsense, try guess all bytes!).
+       *
        * To avoid accidental use of raw pointers, rstt::error_correction's
        * constructor is in a private implementation
        * class. rstt::error_correction::make is the public interface for
        * creating new instances.
        */
-      static sptr make(bool drop_invalid = false);
+      static sptr make(bool drop_invalid = false, int guess_level = 1);
     };
 
   } // namespace rstt

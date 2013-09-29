@@ -27,12 +27,14 @@
 
 #include "qa_rstt.h"
 #include "qa_error_correction.h"
+#include "qa_error_correction_guess.h"
 
 CppUnit::TestSuite *
 qa_rstt::suite()
 {
   CppUnit::TestSuite *s = new CppUnit::TestSuite("rstt");
   s->addTest(gr::rstt::qa_error_correction::suite());
+  s->addTest(gr::rstt::qa_error_correction_guess::suite());
 
   return s;
 }

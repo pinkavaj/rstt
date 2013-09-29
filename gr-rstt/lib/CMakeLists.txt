@@ -24,6 +24,7 @@ list(APPEND rstt_sources
     symbols2bits_impl.cc
     bits2bytes_impl.cc
     bytes2frames_impl.cc
+    error_correction_guess.cc
     error_correction_impl.cc
     decoder_impl.cc
 )
@@ -52,6 +53,8 @@ list(APPEND test_rstt_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_rstt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_rstt.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_error_correction.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_error_correction_guess.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/error_correction_guess.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/error_correction_impl.cc
 )
 
