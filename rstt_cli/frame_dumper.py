@@ -61,7 +61,7 @@ class Client:
             if not data:
                 break
             frame = Frame(data)
-            print("frame: %s" % repr(frame.get_frame_num()))
+            print("frame: %s %s" % (frame.get_frame_num(), frame.is_ok(), ))
             self._dump_frame(frame)
 
     def _dump_calibration(self, calibration):
