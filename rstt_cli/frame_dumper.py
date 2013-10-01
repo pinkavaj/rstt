@@ -78,8 +78,7 @@ class Client:
     def _dump_frame(self, frame):
         if self._meas_log:
             self._dump_meas(frame)
-        if self._test_log:
-            self._dump_test(frame)
+        self._dump_test(frame)
         if self._gps_log:
           self._dump_gps(frame)
 
@@ -122,9 +121,14 @@ class Client:
         self._gps_log.write(s.replace('.', ',') + "\n")
 
     def _dump_test(self, frame):
-        s = ""
+        """Anny testing code belongs here. Code may write to file or just print."""
+        # add anny test/debug print here
+        if not self._test_log:
+            return
+        # add print to file here
         if frame.gps is None:
             return
+        s = ""
         td, t = divmod(frame.gps.time, (3600 * 24))
         th, t = divmod(t, 3600)
         tm, ts = divmod(t, 60)
