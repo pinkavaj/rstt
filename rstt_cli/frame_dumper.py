@@ -6,6 +6,7 @@ from calibration import Calibration
 from frame import Frame
 from math import isfinite
 from struct import unpack
+from subframe import SF_TYPE_CONFIG
 from sys import argv
 
 class Client:
@@ -39,20 +40,28 @@ class Client:
     def loop(self):
         self._test_write_header()
         calibration = Calibration()
+        frame_prev = None
         while True:
             data = self._src.get_frame()
             if not data:
                 return
-            frame = Frame(data)
-            print("frame: %s %s" % (frame.get_frame_num(), frame.is_ok(), ))
+            frame = Frame(data, frame_prev)
+            if not frame:
+                continue
+            if not frame.is_broken():
+                frame_prev = frame
             self._dump_frame(frame)
-            c = frame.get_calibration()
-            if not c is None:
-                if calibration.addFragment(c[0], c[1]):
+            conf = frame.get(SF_TYPE_CONFIG)
+            if conf is not None:
+                frame_num = conf.frame_num
+                if calibration.addFragment(conf.callibration_num, conf.callibration_data):
                     break
+            else:
+                frame_num = 'N/A'
+            print("frame: %s %s" % (frame_num, not frame.is_broken(), ))
         "Recieve until calibration data are completed"
 
-        print("calibration complete")
+        print("calibration complete at frame %s" % frame_num)
         calibration.parse()
         self._dump_calibration(calibration)
 
@@ -60,9 +69,18 @@ class Client:
             data = self._src.get_frame()
             if not data:
                 break
-            frame = Frame(data)
-            print("frame: %s %s" % (frame.get_frame_num(), frame.is_ok(), ))
+            frame = Frame(data, frame_prev)
+            if not frame:
+                continue
+            if not frame.is_broken():
+                frame_prev = frame
             self._dump_frame(frame)
+            conf = frame.get(SF_TYPE_CONFIG)
+            if conf is not None:
+                frame_num = conf.frame_num
+            else:
+                frame_num = 'N/A'
+            print("frame: %s %s" % (frame_num, not frame.is_broken(), ))
 
     def _dump_calibration(self, calibration):
         if self._calib_bin:
