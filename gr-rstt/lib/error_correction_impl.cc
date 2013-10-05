@@ -204,7 +204,10 @@ namespace gr {
         const in_t *const in_end = in + FRAME_LEN - FRAME_FEC_LEN;
         in += FRAME_HDR_LEN;
         while(in < in_end) {
-            const in_t type = in[0] & 0xff;
+            if (in[0] > 0xff || in[1] > 0xff || in[1] == 0x00) {
+               break;
+            }
+            const in_t type = in[0];
             const int len = in[1] * 2;
             if (type == 0xff) {
                 in += 2 + len;
@@ -214,10 +217,20 @@ namespace gr {
                 break;
             }
             if (in + 2 + len + 2 <= in_end) {
-                if (!chech_crc(in + 2, len)) {
+                int sum_d = 0, sum_s = 0;
+                for (int i = 2; i < len + 2; ++i) {
+                    sum_d += in[i] & 0xff;
+                    sum_s += in[i] & (~0xff);
+                }
+                if (sum_d == 0 || sum_s != 0)
+                {
                     all_valid = false;
                 } else {
-                    ++N;
+                    if (!chech_crc(in + 2, len)) {
+                        all_valid = false;
+                    } else {
+                        ++N;
+                    }
                 }
             }
             in += 2 + len + 2;
