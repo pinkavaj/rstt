@@ -111,12 +111,18 @@ class SubframeConfig(Subframe):
         self.frame_num, self.id, self.d12, self.d13, self.d14, \
                 self.callibration_num, self.callibration_data = \
                 unpack('<H10sBBBB16s', self.sf_bytes)
-        self.battery_low = self.d12 & 0x08
-        self.battery_killer_countdown = self.d12 & 0x02
-        self.hum_channel = self.d13 & 0x08
-        self.hum_heat = self.d13 & 0x04
-        if (self.d12 & ~0x0A) or (self.d13 & ~0x0C) or self.d14:
-            self._dbg("Unexpected d1x value in subframe: %s" % sf_bytes)
+        self.battery_low = bool(self.d12 & 0x08)
+        self.battery_killer_countdown = bool(self.d12 & 0x02)
+        self.hum_channel = bool(self.d13 & 0x08)
+        self.hum_heat = bool(self.d13 & 0x04)
+        self.start_detected = ((self.d13 & 0x21) == 0x21)
+        if self.start_detected:
+            self.d13 = self.d13 & ~0x21
+
+        self.d12 = self.d12 & ~0x0A
+        self.d13 = self.d13 & ~0x0C
+        if self.d12 or self.d13 or self.d14:
+            self._dbg("Unexpected d12/d13/d14 value in subframe: %s" % sf_bytes)
 
 
 class SubframeGPS(Subframe):

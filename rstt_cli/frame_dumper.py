@@ -6,7 +6,7 @@ from calibration import Calibration
 from frame import Frame
 from math import isfinite
 from struct import unpack
-from subframe import SF_TYPE_CONFIG
+from subframe import SF_TYPE_CONFIG, SF_TYPE_MEASUREMENTS, SF_TYPE_GPS, SF_TYPE_PADDING, SF_TYPE_WTF1
 from sys import argv
 
 class Client:
@@ -15,15 +15,17 @@ class Client:
     def __init__(self, src_url, log_prefix=None):
         self._src = source.open(src_url)
         self._calib_log = None
+        self._cfg_log = None
         self._gps_log = None
         self._meas_log = None
         self._test_log = None
         self._calib_bin = None
         if log_prefix is not None:
-            self._gps_log = open(log_prefix + '.gps.csv', 'w')
-            self._meas_log = open(log_prefix + '.meas.csv', 'w')
             self._calib_log = open(log_prefix + '.calib.txt', 'w')
             self._calib_bin = open(log_prefix + '.calib.bin', 'wb')
+            self._cfg_log = open(log_prefix + '.cfg.csv', 'w')
+            self._gps_log = open(log_prefix + '.gps.csv', 'w')
+            self._meas_log = open(log_prefix + '.meas.csv', 'w')
 # may contain anything
             self._test_log = open(log_prefix + '.test.13O', 'w')
 
@@ -50,16 +52,16 @@ class Client:
                 continue
             if not frame.is_broken():
                 frame_prev = frame
-            self._dump_frame(frame)
             conf = frame.get(SF_TYPE_CONFIG)
             if conf is not None:
                 frame_num = conf.frame_num
-                if calibration.addFragment(conf.callibration_num, conf.callibration_data):
-                    break
             else:
                 frame_num = 'N/A'
+            self._dump_frame(frame, frame_num)
+            if conf is not None:
+                if calibration.addFragment(conf.callibration_num, conf.callibration_data):
+                    break
             print("frame: %s %s" % (frame_num, not frame.is_broken(), ))
-        "Recieve until calibration data are completed"
 
         print("calibration complete at frame %s" % frame_num)
         calibration.parse()
@@ -74,12 +76,12 @@ class Client:
                 continue
             if not frame.is_broken():
                 frame_prev = frame
-            self._dump_frame(frame)
             conf = frame.get(SF_TYPE_CONFIG)
             if conf is not None:
                 frame_num = conf.frame_num
             else:
                 frame_num = 'N/A'
+            self._dump_frame(frame, frame_num)
             print("frame: %s %s" % (frame_num, not frame.is_broken(), ))
 
     def _dump_calibration(self, calibration):
@@ -93,39 +95,42 @@ class Client:
             self._calib_log.write('%7d\t' % unpack('h', calibration.data[i:i+2]))
         self._calib_log.write('\n')
 
-    def _dump_frame(self, frame):
-        if self._meas_log:
-            self._dump_meas(frame)
-        self._dump_test(frame)
+    def _dump_frame(self, frame, frame_num):
+        if self._cfg_log:
+            self._dump_cfg(frame, frame_num)
         if self._gps_log:
-          self._dump_gps(frame)
+            self._dump_gps(frame, frame_num)
+        if self._meas_log:
+            self._dump_meas(frame, frame_num)
+        self._dump_test(frame, frame_num)
 
-    def _dump_meas(self, frame):
-        if frame.meas is None:
-            s = "\n"
-        else:
-            meas = frame.meas
-            s = "%s;%d;%d;%d;%d;%d;%d;%d;%d\n" % (
-                    str(
-                        frame.get_frame_num()),
-                        meas._d_temp,
-                        meas._d_hum_up,
-                        meas._d_hum_down,
-                        meas._d_ch4,
-                        meas._d_ch5,
-                        meas._d_pressure,
-                        meas._d_ch7,
-                        meas._d_ch8)
-            s = s.replace('.', ',')
-        self._meas_log.write(s)
+    def _dump_cfg(self, frame, frame_num):
+        cfg = frame.get(SF_TYPE_CONFIG)
+        if cfg is None:
+            self._cfg_log.write('\n')
+            return
+        s = "%s,%s,0x%02X,0x%02X,0x%02X,%s,%s,%s,%s,%s,%s,%s\n" % (
+                cfg.frame_num,
+                cfg.id,
+                cfg.d12,
+                cfg.d13,
+                cfg.d14,
+                cfg.battery_low,
+                cfg.battery_killer_countdown,
+                cfg.hum_channel,
+                cfg.hum_heat,
+                cfg.start_detected,
+                cfg.callibration_num,
+                cfg.callibration_data,
+                )
+        self._cfg_log.write(s)
 
-    def _dump_gps(self, frame):
-        if frame.gps is None:
+    def _dump_gps(self, frame, frame_num):
+        gps = frame.get(SF_TYPE_GPS)
+        if gps is None:
             self._gps_log.write("\n")
             return
         s = ""
-
-        gps = frame.gps
         s += "%11.3f;" % gps.time
         s += "%s;" % self._bin(unpack('<H', gps.d76)[0])
         for sat in gps.satelites:
@@ -138,31 +143,49 @@ class Client:
 
         self._gps_log.write(s.replace('.', ',') + "\n")
 
-    def _dump_test(self, frame):
+    def _dump_meas(self, frame, frame_num):
+        meas = frame.get(SF_TYPE_MEASUREMENTS)
+        if meas is None:
+            self._meas_log.write("\n")
+            return
+        s = "%s;%d;%d;%d;%d;%d;%d;%d;%d\n" % (
+                    frame_num,
+                    meas.ch1,
+                    meas.ch2,
+                    meas.ch3,
+                    meas.ch4,
+                    meas.ch5,
+                    meas.ch6,
+                    meas.ch7,
+                    meas.ch8)
+        s = s.replace('.', ',')
+        self._meas_log.write(s)
+
+    def _dump_test(self, frame, frame_num):
         """Anny testing code belongs here. Code may write to file or just print."""
         # add anny test/debug print here
         if not self._test_log:
             return
         # add print to file here
-        if frame.gps is None:
-            return
+        #if frame.gps is None:
+        #    return
         s = ""
-        td, t = divmod(frame.gps.time, (3600 * 24))
-        th, t = divmod(t, 3600)
-        tm, ts = divmod(t, 60)
+        #td, t = divmod(frame.gps.time, (3600 * 24))
+        #th, t = divmod(t, 3600)
+        #tm, ts = divmod(t, 60)
 
-        # "EPOCH/SAT"
-        sats = [s for s in frame.gps.satelites if s.stat_ok() and isfinite(s.prange)]
-        nsat = len(sats)
-        prns = "".join(["G%2i" % s.prn for s in sats]) + (12 - nsat) * "   "
-        s = " %02i  %2i %2i %2i %2i %11.7f  0   %3i%s" % (self._date + (th, tm, ts, nsat, prns))
+        ## "EPOCH/SAT"
+        #sats = [s for s in frame.gps.satelites if s.stat_ok() and isfinite(s.prange)]
+        #nsat = len(sats)
+        #prns = "".join(["G%2i" % s.prn for s in sats]) + (12 - nsat) * "   "
+        #s = " %02i  %2i %2i %2i %2i %11.7f  0   %3i%s" % (self._date + (th, tm, ts, nsat, prns))
 
-        s = s.replace('.', ',')
+        #s = s.replace('.', ',')
         self._test_log.write(s + "\r\n")
 
-        for sat in sats:
-            s = "%14.3f" % (sat.prange, )
-            self._test_log.write(s + "\r\n")
+        #for sat in sats:
+        #    s = "%14.3f" % (sat.prange, )
+        #    self._test_log.write(s + "\r\n")
 
     def _test_write_header(self):
         if not self._test_log:
