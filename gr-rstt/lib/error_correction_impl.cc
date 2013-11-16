@@ -57,7 +57,7 @@ namespace gr {
         guess_level(guess_level)
     {
         rs = init_rs_char(rs_symsize, rs_gfpoly, rs_fcr, rs_prim, rs_nroots);
-        assert (d_rs != 0);
+        assert (rs != 0);
     }
 
     error_correction_impl::~error_correction_impl()
