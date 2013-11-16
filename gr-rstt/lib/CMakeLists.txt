@@ -30,7 +30,7 @@ list(APPEND rstt_sources
 )
 
 add_library(gnuradio-rstt SHARED ${rstt_sources})
-target_link_libraries(gnuradio-rstt ${Boost_LIBRARIES} ${GNURADIO_RUNTIME_LIBRARIES} ${GNURADIO_FEC_LIBRARIES})
+target_link_libraries(gnuradio-rstt ${Boost_LIBRARIES} ${GNURADIO_ALL_LIBRARIES})
 set_target_properties(gnuradio-rstt PROPERTIES DEFINE_SYMBOL "gnuradio_rstt_EXPORTS")
 
 ########################################################################
