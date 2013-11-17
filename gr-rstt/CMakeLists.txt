@@ -145,6 +145,6 @@ add_subdirectory(docs)
 ########################################################################
 # Install cmake search helper for this library
 ########################################################################
-install(FILES cmake/Modules/rsttConfig.cmake
-    DESTINATION lib/cmake/rstt
-)
+#install(FILES cmake/Modules/rsttConfig.cmake
+#    DESTINATION lib/cmake/rstt
+#)
