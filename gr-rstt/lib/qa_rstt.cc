@@ -29,6 +29,7 @@
 #include "qa_error_correction.h"
 #include "qa_error_correction_guess.h"
 #include "qa_noise_level_estimator.h"
+#include "qa_noise_level_estimator2.h"
 
 CppUnit::TestSuite *
 qa_rstt::suite()
@@ -37,6 +38,7 @@ qa_rstt::suite()
   s->addTest(gr::rstt::qa_error_correction::suite());
   s->addTest(gr::rstt::qa_error_correction_guess::suite());
   s->addTest(gr::rstt::qa_noise_level_estimator::suite());
+  s->addTest(gr::rstt::qa_noise_level_estimator2::suite());
 
   return s;
 }

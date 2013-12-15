@@ -28,6 +28,7 @@ list(APPEND rstt_sources
     error_correction_impl.cc
     decoder_impl.cc
     noise_level_estimator_impl.cc
+    noise_level_estimator2_impl.cc
 )
 
 add_library(gnuradio-rstt SHARED ${rstt_sources})
@@ -56,9 +57,11 @@ list(APPEND test_rstt_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_error_correction.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_error_correction_guess.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_noise_level_estimator.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_noise_level_estimator2.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/error_correction_guess.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/error_correction_impl.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/noise_level_estimator_impl.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/noise_level_estimator2_impl.cc
 )
 
 add_executable(test-rstt ${test_rstt_sources})

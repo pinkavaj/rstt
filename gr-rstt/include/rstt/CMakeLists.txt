@@ -27,5 +27,7 @@ install(FILES
     bytes2frames.h
     error_correction.h
     decoder.h
-    noise_level_estimator.h DESTINATION include/rstt
+    noise_model.h
+    noise_level_estimator.h
+    noise_level_estimator2.h DESTINATION include/rstt
 )

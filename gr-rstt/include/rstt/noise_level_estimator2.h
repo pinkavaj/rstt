@@ -13,8 +13,8 @@
  * GNU General Public License for more details.
  */
 
-#ifndef INCLUDED_RSTT_NOISE_LEVEL_ESTIMATOR_H
-#define INCLUDED_RSTT_NOISE_LEVEL_ESTIMATOR_H
+#ifndef INCLUDED_RSTT_NOISE_LEVEL_ESTIMATOR2_H
+#define INCLUDED_RSTT_NOISE_LEVEL_ESTIMATOR2_H
 
 #include <rstt/api.h>
 #include <boost/shared_ptr.hpp>
@@ -26,27 +26,27 @@ namespace gr {
     /*!
      * Estimate noise level value in signal.
 
-     * It does so by spliting input signal power spectrum into chunks.
-     * Then are identified chunks which contains only noise and
-     * from which noise level (mean and dispersion) are estimated.
+     * It find parts of signal power spectrum with low power density.
+     * Noise level and straggling is then estiated.
      */
-    class RSTT_API noise_level_estimator {
+    class RSTT_API noise_level_estimator2 {
      protected:
-       noise_level_estimator()
+       noise_level_estimator2()
        {}
 
      public:
-      typedef boost::shared_ptr<noise_level_estimator> sptr;
+      typedef boost::shared_ptr<noise_level_estimator2> sptr;
 
       /*!
-       * @param coverage is value in range from 0. to 1. It represents amount of
-       *   signal power spectrum used for noise estimation. 0.2 is good value.
-       * @param nsplits numer of fragmens generated for noise estimation.
+       * @param coverage size of spectrum used for noise estimation,
+       *    Expects value in range (0., 1.), 0.33 is good value.
+       * @param chunk_size size of continous part of spectrum containign
+       *    only noise, should be value in range (0., 1), 0.05 is good value.
        */
       static sptr
-      make(float coverage, int nsplits);
+      make(float coverage, float chunk_size);
 
-      virtual ~noise_level_estimator()
+      virtual ~noise_level_estimator2()
       { }
 
       /*!
@@ -61,5 +61,5 @@ namespace gr {
   } // namespace rstt
 } // namespace gr
 
-#endif /* INCLUDED_RSTT_NOISE_LEVEL_ESTIMATOR_H */
+#endif /* INCLUDED_RSTT_NOISE_LEVEL_ESTIMATOR2_H */
 
