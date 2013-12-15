@@ -28,7 +28,6 @@
 #include <cppunit/XmlOutputter.h>
 
 #include <gnuradio/unittests.h>
-#include "qa_noise_level_estimator.h"
 #include "qa_rstt.h"
 #include <iostream>
 
@@ -40,7 +39,6 @@ main (int argc, char **argv)
   CppUnit::XmlOutputter *xmlout = new CppUnit::XmlOutputter(&runner.result(), xmlfile);
 
   runner.addTest(qa_rstt::suite());
-  runner.addTest(gr::rstt::qa_noise_level_estimator::suite());
   runner.setOutputter(xmlout);
 
   bool was_successful = runner.run("", false);
