@@ -57,7 +57,8 @@ namespace gr {
         guess_level(guess_level)
     {
         rs = init_rs_char(rs_symsize, rs_gfpoly, rs_fcr, rs_prim, rs_nroots);
-        assert (rs != 0);
+        if (!rs)
+          throw std::runtime_error("error_correction_impl bad alloc");
     }
 
     error_correction_impl::~error_correction_impl()
