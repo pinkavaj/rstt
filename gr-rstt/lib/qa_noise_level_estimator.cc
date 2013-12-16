@@ -19,8 +19,6 @@
 #include <cppunit/TestAssert.h>
 #include <cmath>
 
-#include <stdio.h>
-
 namespace gr {
   namespace rstt {
 
