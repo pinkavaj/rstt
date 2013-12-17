@@ -1,0 +1,12 @@
+Just list of what can be done, order does not correlate with priority.
+
+ - decode GPS position
+ - measurement decoder using calibration data
+ - store recieved/decoded data (DB/filesystem)
+ - visualize (GUI/web app) telemetry
+ - RPC server proxy for recieved data
+ - web based aplication for sonde flight tracking (plot map, track and decoded telemetry)
+ - tool for automatic transmission detection
+  - SDR based reciever
+  - peak/signal detection
+  - automatic start of reciever/decoder
