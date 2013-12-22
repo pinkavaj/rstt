@@ -29,5 +29,6 @@ install(FILES
     decoder.h
     noise_model.h
     noise_level_estimator.h
-    noise_level_estimator2.h DESTINATION include/rstt
+    noise_level_estimator2.h
+    clip.h DESTINATION include/rstt
 )

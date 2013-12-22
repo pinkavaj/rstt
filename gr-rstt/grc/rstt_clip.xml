@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<block>
+  <name>clip</name>
+  <key>rstt_clip</key>
+  <category>rstt</category>
+  <import>import rstt</import>
+  <make>rstt.clip($vlen, $in_bw, $out_bw)</make>
+  <param>
+    <name>Vector length</name>
+    <key>vlen</key>
+    <value>1024</value>
+    <type>int</type>
+  </param>
+  <param>
+    <name>BW of input vector</name>
+    <key>in_bw</key>
+    <value>1.</value>
+    <type>float</type>
+  </param>
+  <param>
+    <name>BW of output vector</name>
+    <key>out_bw</key>
+    <value>0.8</value>
+    <type>float</type>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>float</type>
+    <vlen>$vlen</vlen>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>float</type>
+    <vlen>$vlen - 2 * round($vlen*($in_bw - $out_bw) / $in_bw / 2)</vlen>
+  </source>
+  <doc>
+    Remove symetricaly outer points from input vector.
+  </doc>
+</block>

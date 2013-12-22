@@ -29,6 +29,7 @@ list(APPEND rstt_sources
     decoder_impl.cc
     noise_level_estimator_impl.cc
     noise_level_estimator2_impl.cc
+    clip_impl.cc
 )
 
 add_library(gnuradio-rstt SHARED ${rstt_sources})

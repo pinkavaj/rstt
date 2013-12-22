@@ -18,5 +18,6 @@
 # Boston, MA 02110-1301, USA.
 
 install(FILES
-    rstt_decoder.xml DESTINATION share/gnuradio/grc/blocks
+    rstt_decoder.xml
+    rstt_clip.xml DESTINATION share/gnuradio/grc/blocks
 )
