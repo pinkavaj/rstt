@@ -33,6 +33,8 @@ class Frame(dict):
                 if frame_prev is None:
                     return
                 self._broken = True
+                if len(frame_prev._sf_len) <= idx:
+                    return
                 sf_len = frame_prev._sf_len[idx]
             data = data[sf_len:]
             status = status[sf_len:]
