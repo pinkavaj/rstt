@@ -2,7 +2,7 @@
 
 import source
 
-from calibration import Calibration
+from calibration import CalibrationCollector, Calibration
 from frame import Frame
 from math import isfinite
 from struct import unpack
@@ -41,7 +41,7 @@ class Client:
 
     def loop(self):
         self._test_write_header()
-        calibration = Calibration()
+        calib = CalibrationCollector()
         frame_prev = None
         while True:
             data = self._src.get_frame()
@@ -59,13 +59,14 @@ class Client:
                 frame_num = 'N/A'
             self._dump_frame(frame, frame_num)
             if conf is not None:
-                if calibration.addFragment(conf.callibration_num, conf.callibration_data):
+                if calib.addFragment(conf.callibration_num, conf.callibration_data):
                     break
             print("frame: %s %s" % (frame_num, not frame.is_broken(), ))
 
         print("calibration complete at frame %s" % frame_num)
-        calibration.parse()
-        self._dump_calibration(calibration)
+        calib_data = calib.data()
+        calib = Calibration(calib_data)
+        self._dump_calibration(calib, calib_data)
 
         while True:
             data = self._src.get_frame()
@@ -84,16 +85,14 @@ class Client:
             self._dump_frame(frame, frame_num)
             print("frame: %s %s" % (frame_num, not frame.is_broken(), ))
 
-    def _dump_calibration(self, calibration):
-        if self._calib_bin:
-            self._calib_bin.write(calibration.data)
+    def _dump_calibration(self, calib, calib_data):
+        if calib_data:
+            self._calib_bin.write(calib_data)
         if not self._calib_log:
             return
-        #self._calib_log.write('0x08: %7d\t' % calibration._d_8)
-        #self._calib_log.write('0x0A: %7d\n' % calibration._d_10)
-        for i in range(0x20, 0x40, 2):
-            self._calib_log.write('%7d\t' % unpack('h', calibration.data[i:i+2]))
-        self._calib_log.write('\n')
+        #self._calib_log.write('0x08: %7d\t' % calib._d_8)
+        #self._calib_log.write('0x0A: %7d\n' % calib._d_10)
+        self._calib_log.write(repr(calib) + '\n')
 
     def _dump_frame(self, frame, frame_num):
         if self._cfg_log:

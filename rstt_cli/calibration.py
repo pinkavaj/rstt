@@ -1,55 +1,66 @@
 import struct
 
-class Calibration(object):
-    """Collect calibration data fragments and process them latter."""
+class CalibrationCollector(object):
+    """Collect calibration data from fragments."""
 
-    def __init__(self, data = b''):
-        self._have_fragments = [False,  ] * 32
-        self._fragments = {}
-        if data:
-            if len(data) != 512:
-                raise ValueError('Unsupported lenght of data: %d != 512' % len(data))
-        self.data = data
+    def __init__(self):
+        self._missing = [True,  ] * 32
+        self._fragments = [None, ] * 32
+        self._data = None
 
-    def addFragment(self, fragment_idx, fragment_data):
+    def addFragment(self, idx, data):
         """Process one subframe, with calibration data."""
-        self._fragments[fragment_idx] = fragment_data
-        self._have_fragments[fragment_idx] = True
-        if self.completed():
-            for idx in range(0,  32):
-                self.data  += self._fragments[idx]
-            return True
-        return False
+        self._fragments[idx] = data
+        self._missing[idx] = False
+        return self.completed()
+
+    def calibration(self):
+        """Return processed calibration data."""
+        return Calibration(self.data())
 
     def completed(self):
         """Return True if all fragments are collected."""
-        if self.data:
-            return True
-        if [x for x in self._have_fragments if x == False]:
+        if [x for x in self._missing if x]:
             return False
         return True
 
-    def parse(self):
-        self._d_0 = self.data[0:2] # TODO
-        self._d_freq = struct.unpack('<H', self.data[2:4])
-        self._d_count_1 = struct.unpack('<H', self.data[4:6])
-        self._d_6 = struct.unpack('<H', self.data[6:8]) # TODO
-        self._d_8 = struct.unpack('<h', self.data[8:10]) # TODO
-        self._d_10 = struct.unpack('<h', self.data[10:12]) # TODO
-        self._d_id = struct.unpack('10c', self.data[22:32])[0].decode('ascii')
-        self._d_block_32 = self.data[32:36] # TODO
-        self._d_36 = struct.unpack('<7h', self.data[0x24:0x32]) # TODO
-        self._d_50 = struct.unpack('<3h', self.data[0x32:0x38]) # TODO
-        self._d_56 = self.data[56:64]
+    def data(self):
+        return b''.join(self._fragments)
+
+class Calibration(object):
+    """Parse calibration data."""
+    def __init__(self, data):
+        self._d_0 = data[0:2] # TODO
+        self._d_freq = struct.unpack('<H', data[2:4])
+        self._d_count_1 = struct.unpack('<H', data[4:6])
+        self._d_6 = struct.unpack('<H', data[6:8]) # TODO
+        self._d_8 = struct.unpack('<h', data[8:10]) # TODO
+        self._d_10 = struct.unpack('<h', data[10:12]) # TODO
+        self._d_id = struct.unpack('10c', data[22:32])[0].decode('ascii')
+        self._d_block_32 = data[32:36] # TODO
+        self._d_36 = struct.unpack('<7h', data[0x24:0x32]) # TODO
+        self._d_50 = struct.unpack('<3h', data[0x32:0x38]) # TODO
+        self._d_56 = data[56:64]
         self._d_f = {}
         for idx in range(64, 511-4, 5):
-            ch, f = struct.unpack('<Bf', self.data[idx:idx+5])
+            ch, f = struct.unpack('<Bf', data[idx:idx+5])
             if ch:
                 self._d_f[ch] = f
 
+    def __repr__(self):
+        s = 'calibration = {\n'
+        c = ['%s: %E' % (x, self._d_f[x]) for x in self._d_f]
+        s += '    "calib": { %s },\n' % ', '.join(c)
+        s += '}'
+        return s
+
 
 if __name__ == '__main__':
-    data = open('calibration.bytes', 'rb').read()
+    import sys
+    if len(sys.argv) != 2:
+      print("%s <INPUT FILE>")
+      sys.exit(1)
+    data = open(sys.argv[1], 'rb').read()
     c = Calibration(data)
-    c.parse()
-    c.print_()
+    print(c)
+
