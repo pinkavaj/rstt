@@ -1,7 +1,7 @@
 import struct
 
 class Calibration(object):
-    """Acumulates calibration data fragments, and parse if all data are avaliable."""
+    """Collect calibration data fragments and process them latter."""
 
     def __init__(self, data = b''):
         self._have_fragments = [False,  ] * 32
