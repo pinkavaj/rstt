@@ -154,7 +154,7 @@ class SubframeGPS(Subframe):
                 self.sf_bytes[14:26], self.sf_bytes[26:]
         time = unpack("<i", time)[0] / 1000.
         self.time = time if time >= 0 else float('NAN')
-        self.d76 = d76 # TODO
+        self.d76 = (d76[1] >> 4, d76[1] & 0xf, d76[0] >> 4, d76[0] & 0xf, )
         prn = []
         while prn_data:
             lo, hi, prn_data = prn_data[0], prn_data[1], prn_data[2:]

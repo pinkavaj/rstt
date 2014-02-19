@@ -29,7 +29,7 @@ class Client:
 # may contain anything
             self._test_log = open(log_prefix + '.test.13O', 'w')
 
-            self._gps_log.write('T;GPS_BLOB_0;' + 'status;PRN;SNR;P range;doppler;?(x);' * 12 + '\n')
+            self._gps_log.write('T;X1;X2;X3;X4;' + 'status;PRN;SNR;P range;doppler;?(x);' * 12 + '\n')
 
     def _bin(self, num):
       #if num is 0:
@@ -131,7 +131,7 @@ class Client:
             return
         s = ""
         s += "%11.3f;" % gps.time
-        s += "%s;" % self._bin(unpack('<H', gps.d76)[0])
+        s += "0x%x;0x%x;0x%x;0x%x;" % gps.d76
         for sat in gps.satelites:
             stat = 1 if sat.doppler_lock else 0
             stat |= 2 if sat.prange_lock else 0
