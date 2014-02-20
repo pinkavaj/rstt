@@ -45,14 +45,37 @@ class Calibration(object):
         for idx in range(64, 511-4, 5):
             ch, f = struct.unpack('<Bf', data[idx:idx+5])
             if ch:
-                self._d_f[ch] = f
+                ch, k = ch // 10, ch % 10
+                v = self._d_f.get(ch, [None, ]*8)
+                v[k] = f
+                self._d_f[ch] = v
 
     def __repr__(self):
         s = 'calibration = {\n'
-        c = ['%s: %E' % (x, self._d_f[x]) for x in self._d_f]
-        s += '    "calib": { %s },\n' % ', '.join(c)
+        c = ['        %s: %s,\n' % (x, self._d_f[x]) for x in self._d_f]
+        s += '    "calib": {\n%s    },\n' % ''.join(c)
         s += '}'
         return s
+
+    def _poly(self, x, n):
+        """Pass x trought calibration polynom with index n."""
+        p = [v or 0. for v in self._d_f[n]]
+        return p[0] + x*(p[1] + x*(p[2] + x*(p[3] + x*(p[4] + x*p[5]))))
+        return x
+
+    def evalMeas(self, measData):
+        meas = {}
+        r_lo = (measData.ch7+measData.ch8) / 2
+        r_hi1 = measData.ch4 - r_lo
+        r_hi2 = measData.ch5 - r_lo
+        u1 = self._poly(r_hi2 / (measData.ch2 - r_lo), 4)
+        u2 = self._poly(r_hi2 / (measData.ch3 - r_lo), 5)
+
+        meas['U'] = max(u1, u2)
+        meas['P'] = float('NAN')
+        meas['T'] = float('NAN')
+
+        return meas
 
 
 if __name__ == '__main__':

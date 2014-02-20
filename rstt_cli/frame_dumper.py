@@ -24,6 +24,7 @@ class Client:
             self._calib_log = open(log_prefix + '.calib.txt', 'w')
             self._calib_bin = open(log_prefix + '.calib.bin', 'wb')
             self._cfg_log = open(log_prefix + '.cfg.csv', 'w')
+            self._eval_log = open(log_prefix + '.eval.csv', 'w')
             self._gps_log = open(log_prefix + '.gps.csv', 'w')
             self._meas_log = open(log_prefix + '.meas.csv', 'w')
 # may contain anything
@@ -58,6 +59,7 @@ class Client:
             else:
                 frame_num = 'N/A'
             self._dump_frame(frame, frame_num)
+            self._dump_eval(frame)
             if conf is not None:
                 if calib.addFragment(conf.callibration_num, conf.callibration_data):
                     break
@@ -83,6 +85,7 @@ class Client:
             else:
                 frame_num = 'N/A'
             self._dump_frame(frame, frame_num)
+            self._dump_eval(frame, calib)
             print("frame: %s %s" % (frame_num, not frame.is_broken(), ))
 
     def _dump_calibration(self, calib, calib_data):
@@ -123,6 +126,18 @@ class Client:
                 cfg.callibration_data,
                 )
         self._cfg_log.write(s)
+
+    def _dump_eval(self, frame, calib=None):
+        """Write out evaluated data from sounding.
+        Transform raw measurements into human readable form."""
+        data = {}
+        if calib is not None:
+            meas = frame.get(SF_TYPE_MEASUREMENTS)
+            if meas:
+                data.update(calib.evalMeas(meas))
+                self._eval_log.write(repr(data))
+        # TODO: evaluate GPS and sonde status
+        self._eval_log.write('\n')
 
     def _dump_gps(self, frame, frame_num):
         gps = frame.get(SF_TYPE_GPS)
