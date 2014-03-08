@@ -2,7 +2,7 @@
 <block>
   <name>Decoder</name>
   <key>rstt_decoder</key>
-  <category>rstt</category>
+  <category>RSTT</category>
   <import>import rstt</import>
   <make>rstt.decoder($sync_nbits, $sync_nbytes, $drop_invalid)</make>
   <param>

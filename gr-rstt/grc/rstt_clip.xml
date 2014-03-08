@@ -2,7 +2,7 @@
 <block>
   <name>clip</name>
   <key>rstt_clip</key>
-  <category>rstt</category>
+  <category>RSTT</category>
   <import>import rstt</import>
   <make>rstt.clip($vlen, $in_bw, $out_bw)</make>
   <param>
