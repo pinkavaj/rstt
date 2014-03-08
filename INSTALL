@@ -9,7 +9,7 @@ RSTT Consists of 3 parts:
 == Installing gr-rstt ==
 
 Requirements:
- * Gnuradio
+ * Gnuradio (>=3.7)
  * gr-osmosdr
  * cmake
  * C++ compiler and usual developers stuff ...
