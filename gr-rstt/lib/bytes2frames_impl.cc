@@ -34,7 +34,7 @@ namespace gr {
     bytes2frames_impl::bytes2frames_impl()
       : gr::block("bytes2frames",
               gr::io_signature::make(1, 1, sizeof(in_t)),
-              gr::io_signature::make(1, 1, sizeof(out_t)*240)),
+              gr::io_signature::make(1, 1, sizeof(out_t)*PACKET_SIZE)),
         more(false)
     {}
 
