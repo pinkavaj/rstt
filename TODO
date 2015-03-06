@@ -1,5 +1,7 @@
 Just list of what can be done, order does not correlate with priority.
 
+ - use root raised cosine filter alpha=0.8 symb_rate=4800
+
  - decode GPS position
  - measurement decoder using calibration data
  - store recieved/decoded data (DB/filesystem)
